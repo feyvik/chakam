@@ -22,10 +22,14 @@ const config: Config = {
             transform: "translateY(0)",
           },
         },
+        breath: {
+          "0%, 100%": { transform: "scale(1)", opacity: "1" },
+          "50%": { transform: "scale(1.05)", opacity: "0.9" },
+        },
       },
       animation: {
         "fade-in": "fade-in 3s ease-out infinite",
-        "pulse-slow": "pulse-slow 3s infinite",
+        breath: "breath 3s ease-in-out infinite",
       },
     },
   },

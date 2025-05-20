@@ -11,8 +11,10 @@
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.1.7",
+    "framer-motion": "^12.12.1",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
+    "react-intersection-observer": "^9.16.0",
     "styled-components": "^6.1.18",
     "tailwindcss": "^4.1.7",
     "tailwindcss-animate": "^1.0.7"

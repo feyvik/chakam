@@ -1,18 +1,12 @@
 /** @format */
 
 import styled from "styled-components";
-// import lady from "../assets/4.mp4";
-import logo from "../assets/logo.png";
-import bgImage from "../assets/bg.jpg";
+import logo from "../assets/2.png";
+import FadeInOnScroll from "../components/FadeInOnScroll";
 
 const PageWrapper = styled.div`
   width: 100%;
   overflow-x: hidden;
-  background-image: url(${bgImage});
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  background-attachment: fixed;
   height: 100vh;
   position: relative;
   .content_one {
@@ -85,7 +79,7 @@ const InfoCard = styled.section`
       font-size: 1.5rem;
       font-family: "Luckiest Guy", cursive;
       span {
-        color: #ffa500;
+        color: #ff4d00;
         -webkit-text-stroke: 1px black;
         text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
       }
@@ -96,7 +90,7 @@ const InfoCard = styled.section`
 
 const AnimatedCard = styled.div`
   width: 400px;
-  background-color: #ffa500;
+  background-color: #ff4d00;
   height: 200px;
   padding: 12px 18px;
   border: 4px solid #000000;
@@ -126,35 +120,41 @@ function Home() {
   return (
     <PageWrapper>
       <Nav>
-        <img className="animate-pulse" src={logo} alt="logo" />
+        <img src={logo} alt="logo" width={200} />
         <button className="transition-all duration-500 transform hover:scale-105 hover:-rotate-1">
           Upload
         </button>
       </Nav>
       <InfoCard>
-        <div className="card_top bg-white animate-pulse-slow">
-          <h2>
-            Discover the Exciting Rise of the <span>CHAKAM</span> Trend Among
-            Nigerian Gen Z
-          </h2>
-        </div>
+        <FadeInOnScroll direction="down" delay={0.4}>
+          <div className="card_top bg-white">
+            <h2>
+              Discover the Exciting Rise of the <span>CHAKAM</span> Trend Among
+              Nigerian Gen Z
+            </h2>
+          </div>
+        </FadeInOnScroll>
       </InfoCard>
       <div className="content_one">
-        <AnimatedCard className="animate-fade-in">
-          <h2>
-            CAPTURE THE <span>CHAKAM</span> MOMENT
-          </h2>
+        <FadeInOnScroll direction="left" delay={0.4}>
+          <AnimatedCard className="animate-pulse">
+            <h2>
+              CAPTURE THE <span>CHAKAM</span> MOMENT
+            </h2>
 
-          <h2>EVIDENCE CHOKE</h2>
-        </AnimatedCard>
+            <h2>EVIDENCE CHOKE</h2>
+          </AnimatedCard>
+        </FadeInOnScroll>
       </div>
 
       <div className="content_two">
-        <AnimatedCard className="animate-pulse">
-          <p>
-            Join the <span>CHAKAM</span> Movement and Make Your Voice Heard
-          </p>
-        </AnimatedCard>
+        <FadeInOnScroll direction="right" delay={0.4}>
+          <AnimatedCard className="animate-breath">
+            <p>
+              Join the <span>CHAKAM</span> Movement and Make Your Voice Heard
+            </p>
+          </AnimatedCard>
+        </FadeInOnScroll>
       </div>
     </PageWrapper>
   );
