@@ -14,17 +14,13 @@ body {
   margin: 0px;
   font-weight: 600;
   font-size: 16px;
-  background-image: url("./assets/bg.jpg");
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  background-attachment: fixed;
+  background-color: #fff8f0;
 }
 
 button {
   font-family: "Luckiest Guy", cursive;
   font-size: 16px;
-  background-color: #ff4d00;
+  background-color: #FFD600;
   color: #000;
   font-weight: bold;
   padding: 12px 18px;

@@ -10,6 +10,8 @@ import img7 from "../assets/chakam_image/7.jpg";
 import img8 from "../assets/chakam_image/8.jpg";
 import img9 from "../assets/chakam_image/9.jpg";
 import img10 from "../assets/chakam_image/10.jpg";
+import img11 from "../assets/chakam_image/11.jpg";
+import img12 from "../assets/chakam_image/12.jpg";
 
 type Direction = "up" | "down" | "left" | "right";
 
@@ -78,6 +80,18 @@ export const ChakamImage: Image[] = [
   {
     id: 10,
     image: img10,
+    side: "right",
+    direction: "left",
+  },
+  {
+    id: 11,
+    image: img11,
+    side: "left",
+    direction: "right",
+  },
+  {
+    id: 12,
+    image: img12,
     side: "right",
     direction: "left",
   },

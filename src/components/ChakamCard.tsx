@@ -7,13 +7,7 @@ import { ChakamImage, type Image } from "../components/ChakamImage";
 const PageWrapper = styled.div`
   width: 100%;
   min-height: 100vh;
-
-  .work-section {
-    width: 100%;
-    min-height: 80vh;
-    padding: 20px 40px;
-  }
-
+  padding: 0px 60px;
   .timeline {
     position: relative;
     max-width: 1800px;
@@ -94,15 +88,17 @@ const PageWrapper = styled.div`
   }
 
   .content {
-    background: #f7f7f7;
-    position: relative;
     overflow: hidden;
     transition: color 0.3s ease;
-    cursor: pointer;
-    border-radius: 6px;
-    padding: 20px;
     border-top-left-radius: 40px;
     border-bottom-right-radius: 40px;
+    height: 400px;
+    width: 100%;
+    img {
+      height: 100%;
+      width: 100%;
+      object-fit: contain;
+    }
   }
 
   @media screen and (max-width: 899px) {
@@ -144,31 +140,38 @@ const PageWrapper = styled.div`
 function ChakamCard() {
   return (
     <PageWrapper>
-      <section className="work-section">
-        <div className="containers">
-          <div className="row m-0">
-            <div className="col">
-              <div className="timeline">
-                {ChakamImage.map((item: Image) => (
-                  <div
-                    key={item.id}
-                    className={`timeline__content ${item.side}`}>
-                    <FadeInOnScroll direction={item.direction} delay={0.4}>
-                      <div className="content">
-                        <img
-                          src={item.image}
-                          alt={item.side}
-                          className="w-full h-auto mb-2 rounded-lg"
-                        />
-                      </div>
-                    </FadeInOnScroll>
+      {/* <div className="row m-0">
+        <div className="col">
+          <div className="timeline">
+            {ChakamImage.map((item: Image) => (
+              <div key={item.id} className={`timeline__content ${item.side}`}>
+                <FadeInOnScroll direction={item.direction} delay={0.4}>
+                  <div className="content">
+                    <img src={item.image} alt={item.side} height={100} />
                   </div>
-                ))}
+                </FadeInOnScroll>
               </div>
-            </div>
+            ))}
           </div>
         </div>
-      </section>
+      </div> */}
+
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        {ChakamImage.map((item: Image) => (
+          <div className="grid gap-4">
+            <div key={item.id} className={`${item.side}`}>
+              <FadeInOnScroll direction={item.direction} delay={0.4}>
+                <img
+                  className="h-auto max-w-full rounded-lg"
+                  src={item.image}
+                  alt={item.side}
+                  height={100}
+                />
+              </FadeInOnScroll>
+            </div>
+          </div>
+        ))}
+      </div>
     </PageWrapper>
   );
 }

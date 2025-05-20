@@ -3,11 +3,17 @@
 import styled from "styled-components";
 import logo from "../assets/2.png";
 import FadeInOnScroll from "../components/FadeInOnScroll";
+import bg from "../assets/bg.jpg";
 
 const PageWrapper = styled.div`
   width: 100%;
   overflow-x: hidden;
   height: 100vh;
+  background-image: url(${bg});
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
   position: relative;
   .content_one {
     position: absolute;
@@ -90,7 +96,7 @@ const InfoCard = styled.section`
 
 const AnimatedCard = styled.div`
   width: 400px;
-  background-color: #ff4d00;
+  background-color: #ffd600;
   height: 200px;
   padding: 12px 18px;
   border: 4px solid #000000;
@@ -122,7 +128,7 @@ function Home() {
       <Nav>
         <img src={logo} alt="logo" width={200} />
         <button className="transition-all duration-500 transform hover:scale-105 hover:-rotate-1">
-          Upload
+          Create Card
         </button>
       </Nav>
       <InfoCard>

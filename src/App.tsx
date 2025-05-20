@@ -2,13 +2,16 @@
 
 import "./index.css";
 import Home from "./pages/Home";
-import ChakamCard from "./components/ChakamCard";
+import ChakamaGallery from "./components/ChakamaGallery";
+import ChakamCommunity from "./components/ChakamCommunity";
+// import ChakamCard from "./components/ChakamCard";
 
 function App() {
   return (
     <>
       <Home />
-      <ChakamCard />
+      <ChakamaGallery />
+      <ChakamCommunity />
     </>
   );
 }
