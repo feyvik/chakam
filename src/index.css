@@ -1,5 +1,7 @@
 /** @format */
 @import url("https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&family=Luckiest+Guy&display=swap");
+
+@config "../tailwind.config.ts";
 @import "tailwindcss";
 
 body {
