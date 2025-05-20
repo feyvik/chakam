@@ -9,7 +9,7 @@ import img6 from "../assets/chakam_image/6.jpg";
 import img7 from "../assets/chakam_image/7.jpg";
 import img8 from "../assets/chakam_image/8.jpg";
 import img9 from "../assets/chakam_image/9.jpg";
-import img10 from "../assets/chakam_image/10.jpg";
+import img10 from "../assets/chakam_image/14.jpg";
 import img11 from "../assets/chakam_image/11.jpg";
 import img12 from "../assets/chakam_image/12.jpg";
 
