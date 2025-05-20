@@ -43,7 +43,7 @@ function Home() {
   return (
     <PageWrapper>
       <Nav>
-        <img src={logo} alt="logo" />
+        <img className="animate-pulse" src={logo} alt="logo" />
         <button className="transition-all duration-500 transform hover:scale-105 hover:-rotate-1">
           Upload
         </button>
