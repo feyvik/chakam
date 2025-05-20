@@ -38,7 +38,7 @@ function ChakamaGallery() {
           from the internet. Screenshots. Memes. Gotchas. All in one place.
         </p>
       </div>
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
         {ChakamImage.map((item: Image) => (
           <div className="grid gap-4 card">
             <div key={item.id} className={`${item.side}`}>

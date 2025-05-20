@@ -27,6 +27,9 @@ const PageWrapper = styled.div`
     border-top-left-radius: 40px;
     border-bottom-right-radius: 40px;
     min-height: 200px;
+    display: flex;
+    justify-content: start;
+    align-items: center;
     h2 {
       font-size: 1.5rem;
       font-family: "Luckiest Guy", cursive;
@@ -53,7 +56,7 @@ function ChakamCommunity() {
       </div>
 
       <div>
-        <div className="grid grid-cols-2 md:grid-cols-3  gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3  gap-4">
           <div className="grid gap-4 card">
             <FadeInOnScroll direction="up" delay={0.4}>
               <h2 className="mb-4">
