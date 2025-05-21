@@ -5,6 +5,12 @@ const FooterWrapper = styled.div`
   width: 100%;
   min-height: 10vh;
   padding: 20px 60px;
+  footer {
+    box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.45);
+  }
+  @media (max-width: 768px) {
+    padding: 60px 20px;
+  }
 `;
 
 function Footer() {

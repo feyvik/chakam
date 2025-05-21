@@ -7,6 +7,10 @@ const PageWrapper = styled.div`
   width: 100%;
   min-height: 100vh;
   padding: 60px 60px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
   h1 {
     font-size: 2rem;
     font-family: "Luckiest Guy", cursive;
@@ -40,12 +44,16 @@ const PageWrapper = styled.div`
       }
     }
   }
+
+  @media (max-width: 768px) {
+    padding: 60px 20px;
+  }
 `;
 
 function ChakamCommunity() {
   return (
     <PageWrapper>
-      <div className="mb-12 text-left">
+      <div className="mb-12 text-left w-[100%]">
         <h1 className="mb-4">
           Unleash your boldness with <br /> <span>CHAKAM!</span>
         </h1>
@@ -55,7 +63,7 @@ function ChakamCommunity() {
         </p>
       </div>
 
-      <div>
+      <div className="w-[100%]">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3  gap-4">
           <div className="grid gap-4 card">
             <FadeInOnScroll direction="up" delay={0.4}>

@@ -2,12 +2,18 @@
 
 import styled from "styled-components";
 import FadeInOnScroll from "../components/FadeInOnScroll";
+import ChakamUpload from "./ChakamUpload";
 import { ChakamImage, type Image } from "../components/ChakamImage";
 
 const PageWrapper = styled.div`
   width: 100%;
   min-height: 100vh;
-  padding: 0px 60px;
+  padding: 60px 60px;
+
+  @media (max-width: 768px) {
+    padding: 60px 20px;
+  }
+
   .timeline {
     position: relative;
     max-width: 1800px;
@@ -140,7 +146,8 @@ const PageWrapper = styled.div`
 function ChakamCard() {
   return (
     <PageWrapper>
-      {/* <div className="row m-0">
+      <ChakamUpload />
+      <div className="row m-0">
         <div className="col">
           <div className="timeline">
             {ChakamImage.map((item: Image) => (
@@ -154,23 +161,6 @@ function ChakamCard() {
             ))}
           </div>
         </div>
-      </div> */}
-
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        {ChakamImage.map((item: Image) => (
-          <div className="grid gap-4">
-            <div key={item.id} className={`${item.side}`}>
-              <FadeInOnScroll direction={item.direction} delay={0.4}>
-                <img
-                  className="h-auto max-w-full rounded-lg"
-                  src={item.image}
-                  alt={item.side}
-                  height={100}
-                />
-              </FadeInOnScroll>
-            </div>
-          </div>
-        ))}
       </div>
     </PageWrapper>
   );
