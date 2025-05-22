@@ -38,6 +38,23 @@ const PageWrapper = styled.div`
     border-radius: 10px;
     box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.45);
   }
+
+  .imageCard {
+    border-radius: 10px;
+    width: 100%;
+    height: 300px;
+    text-align: left;
+    display: flex;
+    align-items: start;
+    justify-content: center;
+    flex-direction: column;
+    img {
+      max-height: 100%;
+      max-width: 100%;
+      height: auto;
+      width: auto;
+    }
+  }
 `;
 
 const DisplayCard = styled.div`
@@ -76,6 +93,7 @@ type Post = {
   id: string;
   authorId?: string;
   userValue?: string;
+  postType: string;
 };
 
 function ChakamFeeds({ refreshKey, onUploadComplete }: ChakamFeedsProps) {
@@ -87,10 +105,15 @@ function ChakamFeeds({ refreshKey, onUploadComplete }: ChakamFeedsProps) {
       const q = query(postRef, orderBy("createdAt", "desc"));
       const snapshot = await getDocs(q);
 
-      const postList = snapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
+      const postList = snapshot.docs.map((doc) => {
+        const data = doc.data();
+        return {
+          id: doc.id,
+          authorId: data.authorId,
+          userValue: data.userValue,
+          postType: data.postType ?? "text", // fallback if missing
+        } as Post;
+      });
 
       setPosts(postList);
     } catch (error) {
@@ -107,7 +130,7 @@ function ChakamFeeds({ refreshKey, onUploadComplete }: ChakamFeedsProps) {
       <div className="thread flex flex-col">
         {posts.map((item) => (
           <FadeInOnScroll key={item.id} direction="up" delay={0.4}>
-            <div className="w-[60%] m-h-[400px] py-6 content mx-auto bg-[#1a1a1a] mb-4 flex flex-col">
+            <div className="w-[60%] m-h-[400px] py-6 content mx-auto bg-[#ffffff] mb-4 flex flex-col">
               <div className="px-4 flex-1">
                 <div className="text-end">
                   <DeletePost
@@ -115,12 +138,18 @@ function ChakamFeeds({ refreshKey, onUploadComplete }: ChakamFeedsProps) {
                     onUploadComplete={onUploadComplete}
                   />
                 </div>
-                <DisplayCard className="mt-3">
-                  <div className="p-4 preview_card">
-                    <p className="mb-3"> {item.userValue}</p>
-                    <h4>chakam</h4>
+                {item.postType === "text" ? (
+                  <DisplayCard className="mt-3">
+                    <div className="p-4 preview_card">
+                      <p className="mb-3"> {item.userValue}</p>
+                      <h4>chakam</h4>
+                    </div>
+                  </DisplayCard>
+                ) : (
+                  <div className="imageCard">
+                    <img src={item.userValue} alt={item.postType} />
                   </div>
-                </DisplayCard>
+                )}
               </div>
               <div className="px-4 mt-4 w-[100%] md:text-end">
                 <Link to={`/single-feed/${item.id}`}>

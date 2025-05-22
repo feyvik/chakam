@@ -9,7 +9,7 @@ import { auth, provider, signInWithPopup, signOut } from "../firebase-config";
 const NavWrapper = styled.nav.withConfig({
   shouldForwardProp: (prop) => prop !== "isscrolled",
 })<{ $isscrolled: boolean }>`
-  background: ${({ $isscrolled }) => ($isscrolled ? "#ffffff" : "#545454")};
+  background: ${({ $isscrolled }) => ($isscrolled ? "#fff8f0" : "#545454")};
   position: ${({ $isscrolled }) => ($isscrolled ? "fixed" : "static")};
   z-index: ${({ $isscrolled }) => ($isscrolled ? "1" : "auto")};
   padding: 20px 60px;

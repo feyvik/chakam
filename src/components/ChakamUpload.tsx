@@ -5,7 +5,13 @@ import styled from "styled-components";
 import FadeInOnScroll from "../components/FadeInOnScroll";
 import { toPng } from "html-to-image";
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
-import { db } from "./../firebase-config";
+import { db, storage, authAppImage } from "./../firebase-config";
+import {
+  uploadBytes,
+  getDownloadURL,
+  ref as storageRef,
+} from "firebase/storage";
+import { signInAnonymously } from "firebase/auth";
 
 const PageWrapper = styled.div`
   width: 100%;
@@ -46,6 +52,18 @@ const PageWrapper = styled.div`
     align-items: center;
     justify-content: center;
   }
+
+  .imageCard {
+    border: 4px solid #1a1a1a;
+    border-radius: 10px;
+    width: 100%;
+    min-height: 200px;
+    text-align: left;
+    display: flex;
+    align-items: start;
+    justify-content: center;
+    flex-direction: column;
+  }
 `;
 
 const Input = styled.textarea`
@@ -81,6 +99,7 @@ function ChakamUpload({ onUploadComplete }: ChakamUploadProps) {
   const [output, setOutput] = useState("");
   const [error, setError] = useState("");
   const [modal, setModal] = useState(false);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
   const handleTextChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setText(e.target.value);
@@ -88,13 +107,9 @@ function ChakamUpload({ onUploadComplete }: ChakamUploadProps) {
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file && file.type === "text/plain") {
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        const fileText = event.target?.result as string;
-        setText(fileText);
-      };
-      reader.readAsText(file);
+    if (file) {
+      setSelectedFile(file);
+      setModal(true);
     }
   };
 
@@ -122,18 +137,20 @@ function ChakamUpload({ onUploadComplete }: ChakamUploadProps) {
             <h2>Create Your Chakam</h2>
           </div>
           <form onSubmit={handleSubmit}>
-            <div className="space-y-2 mb-2">
-              <label className="font-medium text-lg" htmlFor="statement">
-                Your Statement:
-              </label>
-              <Input
-                id="statement"
-                className="mt-2"
-                placeholder="e.g., Pineapple belongs on pizza..."
-                value={text}
-                onChange={handleTextChange}
-              />
-            </div>
+            {!selectedFile && (
+              <div className="space-y-2 mb-2">
+                <label className="font-medium text-lg" htmlFor="statement">
+                  Your Statement:
+                </label>
+                <Input
+                  id="statement"
+                  className="mt-2"
+                  placeholder="e.g., Pineapple belongs on pizza..."
+                  value={text}
+                  onChange={handleTextChange}
+                />
+              </div>
+            )}
             <h2 className="text-center mb-2">Or</h2>
             {!text && (
               <div className="flex items-center justify-center w-full mb-4">
@@ -168,6 +185,7 @@ function ChakamUpload({ onUploadComplete }: ChakamUploadProps) {
                 </label>
               </div>
             )}
+
             <button type="submit" className="w-[100%]">
               Chakam Me! 📸
             </button>
@@ -180,6 +198,7 @@ function ChakamUpload({ onUploadComplete }: ChakamUploadProps) {
           onUploadComplete={onUploadComplete}
           userValue={output}
           handleSetModal={setModal}
+          imageUrlValue={selectedFile}
         />
       )}
     </PageWrapper>
@@ -192,6 +211,7 @@ type ChakamModalProps = {
   userValue: string;
   handleSetModal: (value: boolean) => void;
   onUploadComplete: () => void;
+  imageUrlValue: File | null;
 };
 
 const CloseButton = styled.button`
@@ -229,6 +249,7 @@ export const ChakamModal = ({
   userValue,
   handleSetModal,
   onUploadComplete,
+  imageUrlValue,
 }: ChakamModalProps) => {
   const ref = useRef<HTMLDivElement>(null);
 
@@ -265,12 +286,51 @@ export const ChakamModal = ({
       userValue,
       authorId: Math.random().toString(36).substring(2, 10),
       createdAt: serverTimestamp(),
+      postType: "text",
     });
 
     handleSetModal(false);
     onUploadComplete();
 
     return doc.id;
+  };
+
+  const handleUpload = async () => {
+    if (!imageUrlValue) return;
+
+    try {
+      const savedUserId = localStorage.getItem("anonymousUserId");
+
+      if (!savedUserId) {
+        signInAnonymously(authAppImage)
+          .then((result) =>
+            localStorage.setItem("anonymousUserId", result.user.uid)
+          )
+          .catch((err) => console.error("Login error:", err));
+      }
+
+      const fileRef = storageRef(
+        storage,
+        `uploads/${Date.now()}-${imageUrlValue.name}`
+      );
+      await uploadBytes(fileRef, imageUrlValue);
+      const url = await getDownloadURL(fileRef);
+
+      const postRef = collection(db, "feeds");
+
+      const doc = await addDoc(postRef, {
+        userValue: url,
+        authorId: Math.random().toString(36).substring(2, 10),
+        createdAt: serverTimestamp(),
+        postType: "url",
+      });
+
+      handleSetModal(false);
+
+      return doc.id;
+    } catch (error) {
+      console.error("Upload failed:", error);
+    }
   };
 
   return (
@@ -298,16 +358,36 @@ export const ChakamModal = ({
             </svg>
             <span className="sr-only">Close modal</span>
           </CloseButton>
-          <DisplayCard className="mt-3">
-            <div ref={ref} className="p-4 preview_card">
-              <p className="mb-3">{userValue}</p>
-              <h4>chakam</h4>
+
+          {userValue && (
+            <DisplayCard className="mt-3">
+              <div ref={ref} className="p-4 preview_card">
+                <p className="mb-3">{userValue}</p>
+                <h4>chakam</h4>
+              </div>
+            </DisplayCard>
+          )}
+
+          {imageUrlValue && (
+            <div ref={ref} className="imageCard mt-3">
+              <img
+                src={URL.createObjectURL(imageUrlValue)}
+                alt={imageUrlValue.type}
+              />
             </div>
-          </DisplayCard>
+          )}
+
           <div className="mt-4 text-start flex gap-2 flex-wrap">
-            <button onClick={() => createPost()} type="button">
-              Post
-            </button>
+            {imageUrlValue ? (
+              <button onClick={() => handleUpload()} type="button">
+                Upload Image
+              </button>
+            ) : (
+              <button onClick={() => createPost()} type="button">
+                Post
+              </button>
+            )}
+
             <button type="button" onClick={downloadImage}>
               Download
             </button>
