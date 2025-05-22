@@ -25,7 +25,7 @@ const PageWrapper = styled.div`
   padding: 60px 60px;
 
   .thread {
-    height: 80vh;
+    min-height: 100vh;
     width: 600px;
     margin: 0 auto;
     position: relative;
@@ -71,9 +71,10 @@ const DisplayCard = styled.div`
 
 const CommentFeed = styled.div`
   width: 100%;
-  height: 60vh;
-  overflow-x: hidden;
-  overflow-y: scroll;
+  height: 62vh;
+  .feeds_overview {
+    height: 62vh;
+  }
   @media (max-width: 768px) {
     padding: 60px 20px;
     .thread {
@@ -108,6 +109,11 @@ function SinglePost() {
   const [singlePost, setSinglePost] = useState<Post | null>(null);
   const [comments, setComments] = useState<Comment[]>([]);
   const { user } = useAuth();
+  const [refreshKey, setRefreshKey] = useState(0);
+
+  const triggerRefresh = () => {
+    setRefreshKey((prev) => prev + 1);
+  };
 
   const getSinglePost = async (postId: string) => {
     try {
@@ -149,7 +155,7 @@ function SinglePost() {
       getSinglePost(id);
       fetchComments(id);
     }
-  }, [fetchComments, id]);
+  }, [fetchComments, id, refreshKey]);
 
   return (
     <PageWrapper>
@@ -163,56 +169,56 @@ function SinglePost() {
                   <h4>chakam</h4>
                 </div>
               </DisplayCard>
-              <CommentFeed>
-                {comments &&
-                  comments.map((message) => (
-                    <div key={message.id} className="px-2 pt-4">
-                      <div className="flex flex-col">
-                        <div className="flex items-start gap-2.5 flex-wrap">
-                          <div className="w-[100%] sm:w-[50px]">
-                            <img
-                              className="w-10 h-10 rounded-full"
-                              src={user.photoURL}
-                              alt="Jese image"
-                            />
-                          </div>
-                          <div className="flex flex-col leading-1.5 w-[100%] sm:flex-1">
-                            <div className="flex items-center space-x-2 rtl:space-x-reverse">
-                              <span className="text-sm font-semibold text-gray-900 dark:text-white">
-                                {message.username}
-                              </span>
-                              <span className="text-sm font-normal text-gray-500 dark:text-gray-400">
-                                {new Date(
-                                  message.createdAt.seconds * 1000
-                                ).toLocaleString()}
-                              </span>
+              <CommentFeed className="py-4">
+                <div className="feeds_overview overflow-auto">
+                  {comments &&
+                    comments.map((message) => (
+                      <div key={message.id} className="px-2 pt-4">
+                        <div className="flex flex-col">
+                          <div className="flex items-start gap-2.5 flex-wrap">
+                            <div className="w-[100%] sm:w-[50px]">
+                              <img
+                                className="w-10 h-10 rounded-full"
+                                src={user.photoURL}
+                                alt="Jese image"
+                              />
                             </div>
-                            <p className="text-sm font-normal py-2 text-gray-900 dark:text-white">
-                              {message.content}
-                            </p>
+                            <div className="flex flex-col leading-1.5 w-[100%] sm:flex-1">
+                              <div className="flex items-center space-x-2 rtl:space-x-reverse">
+                                <span className="text-sm font-semibold text-gray-900 dark:text-white">
+                                  {message.username}
+                                </span>
+                                <span className="text-sm font-normal text-gray-500 dark:text-gray-400">
+                                  {new Date(
+                                    message.createdAt.seconds * 1000
+                                  ).toLocaleString()}
+                                </span>
+                              </div>
+                              <p className="text-sm font-normal py-2 text-gray-900 dark:text-white">
+                                {message.content}
+                              </p>
 
-                            <VotingButton
-                              quoteId={singlePost.id}
-                              replyId={message.id}
-                              initiallyLiked={message.likedBy?.includes(
-                                user.id
-                              )}
-                              userId={user.uid}
-                            />
+                              <VotingButton
+                                quoteId={singlePost.id}
+                                replyId={message.id}
+                                initiallyLiked={message.likedBy?.includes(
+                                  user.id
+                                )}
+                                userId={user.uid}
+                              />
+                            </div>
                           </div>
                         </div>
                       </div>
-                    </div>
-                  ))}
+                    ))}
+                </div>
               </CommentFeed>
 
               <div className="absolute bottom-0 left-0 w-[100%]">
                 <ReplyBox
                   userInfo={user}
                   postId={singlePost.id}
-                  refreshComments={() => {
-                    if (id) fetchComments(id);
-                  }}
+                  onUploadComplete={triggerRefresh}
                 />
               </div>
             </>
@@ -248,10 +254,14 @@ interface UserInfo {
 interface ReplyBoxProps {
   userInfo?: UserInfo;
   postId?: string;
-  refreshComments?: () => void;
+  onUploadComplete: () => void;
 }
 
-export const ReplyBox = ({ userInfo, postId }: ReplyBoxProps) => {
+export const ReplyBox = ({
+  userInfo,
+  postId,
+  onUploadComplete,
+}: ReplyBoxProps) => {
   const [reply, setReply] = useState("");
 
   const submitTextPost = async () => {
@@ -273,6 +283,8 @@ export const ReplyBox = ({ userInfo, postId }: ReplyBoxProps) => {
         createdAt: Timestamp.now(),
         likedBy: [],
       });
+      onUploadComplete();
+      setReply("");
     } catch (error) {
       console.error("Error saving post:", error);
     }
@@ -358,42 +370,6 @@ export const VotingButton = ({
       setLikeCount((prev) => prev + 1);
     }
   };
-
-  // const toggleLike = async () => {
-  //   if (!quoteId || !replyId || !userId) {
-  //     console.error("Missing quoteId, replyId, or userId");
-  //     return;
-  //   }
-
-  //   const replyRef = doc(db, "feeds", quoteId, "comments", replyId);
-  //   const commentSnap = await getDoc(replyRef);
-
-  //   if (!commentSnap.exists()) {
-  //     console.error("Comment does not exist!");
-  //     return;
-  //   }
-
-  //   const likedByArr: string[] = commentSnap.data().likedBy || [];
-
-  //   if (likedByArr.includes(userId)) {
-  //     await updateDoc(replyRef, {
-  //       likedBy: arrayRemove(userId),
-  //     });
-  //     setLiked(likedByArr.includes(userId));
-  //     setLikeCount(likedByArr.length);
-  //   } else {
-  //     await updateDoc(replyRef, {
-  //       likedBy: arrayUnion(userId),
-  //     });
-  //     setLiked(likedByArr.includes(userId));
-  //     setLikeCount(likedByArr.length);
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   setLiked(initiallyLiked);
-  // }, [initiallyLiked]);
-
   return (
     <div className="flex items-center justify-between">
       {liked ? (
