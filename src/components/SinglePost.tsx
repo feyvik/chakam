@@ -18,6 +18,7 @@ import {
 } from "firebase/firestore";
 import useAuth from "../hooks/useAuth";
 import { useParams } from "react-router-dom";
+import DeleteComment from "./DeleteComment";
 
 const PageWrapper = styled.div`
   width: 100%;
@@ -173,7 +174,9 @@ function SinglePost() {
                 <div className="feeds_overview overflow-auto">
                   {comments &&
                     comments.map((message) => (
-                      <div key={message.id} className="px-2 pt-4">
+                      <div
+                        key={message.id}
+                        className="px-2 py-4 border-t border-radius">
                         <div className="flex flex-col">
                           <div className="flex items-start gap-2.5 flex-wrap">
                             <div className="w-[100%] sm:w-[50px]">
@@ -193,6 +196,13 @@ function SinglePost() {
                                     message.createdAt.seconds * 1000
                                   ).toLocaleString()}
                                 </span>
+                                <div className="flex-1 text-end">
+                                  <DeleteComment
+                                    postId={singlePost.id}
+                                    onUploadComplete={triggerRefresh}
+                                    commentId={message.id}
+                                  />
+                                </div>
                               </div>
                               <p className="text-sm font-normal py-2 text-gray-900 dark:text-white">
                                 {message.content}
@@ -213,7 +223,6 @@ function SinglePost() {
                     ))}
                 </div>
               </CommentFeed>
-
               <div className="absolute bottom-0 left-0 w-[100%]">
                 <ReplyBox
                   userInfo={user}

@@ -6,6 +6,7 @@ import { Link } from "react-router-dom";
 import { collection, getDocs, query, orderBy } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { db } from "./../firebase-config";
+import DeletePost from "./DeletePost";
 
 const PageWrapper = styled.div`
   width: 100%;
@@ -68,16 +69,16 @@ const DisplayCard = styled.div`
 
 type ChakamFeedsProps = {
   refreshKey: number;
+  onUploadComplete: () => void;
 };
 
 type Post = {
   id: string;
   authorId?: string;
   userValue?: string;
-  // add other fields as needed
 };
 
-function ChakamFeeds({ refreshKey }: ChakamFeedsProps) {
+function ChakamFeeds({ refreshKey, onUploadComplete }: ChakamFeedsProps) {
   const [posts, setPosts] = useState<Post[]>([]);
 
   const getAllPosts = async () => {
@@ -105,9 +106,15 @@ function ChakamFeeds({ refreshKey }: ChakamFeedsProps) {
     <PageWrapper>
       <div className="thread flex flex-col">
         {posts.map((item) => (
-          <FadeInOnScroll key={item.authorId} direction="up" delay={0.4}>
-            <div className="w-[60%] m-h-[400px] py-6 content mx-auto bg-white mb-4 flex flex-col">
+          <FadeInOnScroll key={item.id} direction="up" delay={0.4}>
+            <div className="w-[60%] m-h-[400px] py-6 content mx-auto bg-[#1a1a1a] mb-4 flex flex-col">
               <div className="px-4 flex-1">
+                <div className="text-end">
+                  <DeletePost
+                    postId={item.id}
+                    onUploadComplete={onUploadComplete}
+                  />
+                </div>
                 <DisplayCard className="mt-3">
                   <div className="p-4 preview_card">
                     <p className="mb-3"> {item.userValue}</p>

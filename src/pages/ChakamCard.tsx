@@ -12,7 +12,7 @@ function ChakamCard() {
   return (
     <>
       <ChakamUpload onUploadComplete={triggerRefresh} />
-      <ChakamFeeds refreshKey={refreshKey} />
+      <ChakamFeeds refreshKey={refreshKey} onUploadComplete={triggerRefresh} />
     </>
   );
 }
