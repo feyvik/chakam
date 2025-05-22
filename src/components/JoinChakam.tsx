@@ -17,10 +17,11 @@ const PageWrapper = styled.div`
   }
 
   .card {
-    background-color: #ffd600;
+    background-color: #1a1a1a;
+    color: #fff8f0;
     width: 100%;
     padding: 12px 18px;
-    border: 4px solid #000000;
+    border: 4px solid #ff4d00;
     box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.45);
     border-top-left-radius: 40px;
     border-bottom-right-radius: 40px;
@@ -39,37 +40,36 @@ const PageWrapper = styled.div`
   }
 `;
 
-function ChakamCommunity() {
+function JoinChakam() {
   return (
     <PageWrapper>
       <div className="mb-12 text-center w-[100%]">
-        <span>Savage</span>
-        <h1 className="mb-2 mt-4">Unleash Your Wit and Sarcasm</h1>
-        <p>
-          Chakam lets you express your thoughts with a twist.
-          <br className="hidden md:block" /> Share your fake-deep lines and
-          watch the hilarity unfold!
-        </p>
+        <span>Engage</span>
+        <h1 className="mb-2 mt-4">Join the Fun Today</h1>
+        <p>Experience the thrill of witty exchanges and laughter.</p>
       </div>
 
       <div className="w-[100%]">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3  gap-4">
           <div className="grid gap-4 card">
             <FadeInOnScroll direction="up" delay={0.4}>
-              <h2 className="mb-4">Craft Your Fake-Deep Lines</h2>
-              <p>Post your most outrageous and humorous lines.</p>
+              <p>Engagement</p>
+              <h2 className="my-4">How to Get Started </h2>
+              <p>Post your thoughts and get real responses.</p>
             </FadeInOnScroll>
           </div>
           <div className="grid gap-4 card">
             <FadeInOnScroll direction="down" delay={0.4}>
-              <h2 className="mb-4">Experience the Power of Brutal Clapbacks</h2>
-              <p>Get ready for the ultimate reality check!</p>
+              <p>Responses</p>
+              <h2 className="my-4">Get Involved</h2>
+              <p>Respond to others and share your perspective.</p>
             </FadeInOnScroll>
           </div>
           <div className="grid gap-4 card">
             <FadeInOnScroll direction="up" delay={0.4}>
-              <h2 className="mb-4">Engage with Our Upvote System</h2>
-              <p>Your favorite responses rise to the top.</p>
+              <p>Vote</p>
+              <h2 className="my-4">Make Your Mark</h2>
+              <p>Upvote your favorite replies and join the fun.</p>
             </FadeInOnScroll>
           </div>
         </div>
@@ -78,4 +78,4 @@ function ChakamCommunity() {
   );
 }
 
-export default ChakamCommunity;
+export default JoinChakam;

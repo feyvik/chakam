@@ -1,0 +1,131 @@
+/** @format */
+
+import styled from "styled-components";
+import FadeInOnScroll from "../components/FadeInOnScroll";
+import { Link } from "react-router-dom";
+import { collection, getDocs, query, orderBy } from "firebase/firestore";
+import { useEffect, useState } from "react";
+import { db } from "./../firebase-config";
+
+const PageWrapper = styled.div`
+  width: 100%;
+  min-height: 100vh;
+  padding: 60px 60px;
+
+  @media (max-width: 768px) {
+    padding: 60px 20px;
+  }
+
+  .thread {
+    img {
+      border: 4px solid #1a1a1a;
+      height: 300px;
+      width: 100%;
+      border-radius: 10px;
+    }
+  }
+
+  .col {
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+    width: 100%;
+    justify-content: center;
+  }
+
+  .content {
+    border-radius: 10px;
+    box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.45);
+  }
+`;
+
+const DisplayCard = styled.div`
+  .preview_card {
+    border: 4px solid #1a1a1a;
+    border-radius: 10px;
+    width: 100%;
+    min-height: 200px;
+    text-align: left;
+    display: flex;
+    align-items: start;
+    justify-content: center;
+    flex-direction: column;
+    background: #fff8f0;
+  }
+
+  p {
+    font-size: 1.2rem;
+  }
+
+  h4 {
+    font-family: "Luckiest Guy", cursive;
+    font-size: 2rem;
+    color: #ff4d00;
+    -webkit-text-stroke: 1px black;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+  }
+`;
+
+type ChakamFeedsProps = {
+  refreshKey: number;
+};
+
+type Post = {
+  id: string;
+  authorId?: string;
+  userValue?: string;
+  // add other fields as needed
+};
+
+function ChakamFeeds({ refreshKey }: ChakamFeedsProps) {
+  const [posts, setPosts] = useState<Post[]>([]);
+
+  const getAllPosts = async () => {
+    try {
+      const postRef = collection(db, "feeds");
+      const q = query(postRef, orderBy("createdAt", "desc"));
+      const snapshot = await getDocs(q);
+
+      const postList = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+
+      setPosts(postList);
+    } catch (error) {
+      console.error("Error fetching posts:", error);
+    }
+  };
+
+  useEffect(() => {
+    getAllPosts();
+  }, [refreshKey]);
+
+  return (
+    <PageWrapper>
+      <div className="thread flex flex-col">
+        {posts.map((item) => (
+          <FadeInOnScroll key={item.authorId} direction="up" delay={0.4}>
+            <div className="w-[60%] m-h-[400px] py-6 content mx-auto bg-white mb-4 flex flex-col">
+              <div className="px-4 flex-1">
+                <DisplayCard className="mt-3">
+                  <div className="p-4 preview_card">
+                    <p className="mb-3"> {item.userValue}</p>
+                    <h4>chakam</h4>
+                  </div>
+                </DisplayCard>
+              </div>
+              <div className="px-4 mt-4 w-[100%] md:text-end">
+                <Link to={`/single-feed/${item.id}`}>
+                  <button type="button">Comment</button>
+                </Link>
+              </div>
+            </div>
+          </FadeInOnScroll>
+        ))}
+      </div>
+    </PageWrapper>
+  );
+}
+
+export default ChakamFeeds;

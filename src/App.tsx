@@ -5,7 +5,9 @@ import { Routes, Route } from "react-router-dom";
 import Header from "./components/Header";
 import Home from "./pages/Home";
 import Footer from "./components/Footer";
-import ChakamCard from "./components/ChakamCard";
+import ChakamCard from "./pages/ChakamCard";
+import SinglePost from "./components/SinglePost";
+import ProtectedRoute from "./ProtectedRoute";
 
 function App() {
   return (
@@ -13,7 +15,23 @@ function App() {
       <Header />
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/feeds" element={<ChakamCard />} />
+
+        <Route
+          path="/feeds"
+          element={
+            <ProtectedRoute>
+              <ChakamCard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/single-feed/:id"
+          element={
+            <ProtectedRoute>
+              <SinglePost />
+            </ProtectedRoute>
+          }
+        />
       </Routes>
       <Footer />
     </>

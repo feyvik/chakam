@@ -13,16 +13,16 @@ const PageWrapper = styled.div`
     font-size: 2rem;
     font-family: "Luckiest Guy", cursive;
     text-align: center;
-    color: #ffffff;
+    color: #fff8f0;
     span {
-      color: #ffd600;
+      color: #ff4d00;
       -webkit-text-stroke: 1px black;
       text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
     }
   }
 
   p {
-    color: #ffffff;
+    color: #fff8f0;
   }
 
   card {
@@ -48,8 +48,8 @@ function ChakamaGallery() {
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
         {ChakamImage.map((item: Image) => (
-          <div className="grid gap-4 card">
-            <div key={item.id} className={`${item.side}`}>
+          <div key={item.id} className="grid gap-4 card">
+            <div className={`${item.side}`}>
               <FadeInOnScroll direction={item.direction} delay={0.4}>
                 <img
                   className="h-auto max-w-full rounded-lg"

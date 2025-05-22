@@ -1,31 +1,26 @@
 /** @format */
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import styled from "styled-components";
 import FadeInOnScroll from "../components/FadeInOnScroll";
+import { toPng } from "html-to-image";
+import { collection, addDoc, serverTimestamp } from "firebase/firestore";
+import { db } from "./../firebase-config";
 
 const PageWrapper = styled.div`
   width: 100%;
   min-height: 100vh;
-  padding: 0px 60px;
+  padding: 60px 60px;
+  position: relative;
+
   h1 {
     font-size: 2rem;
     font-family: "Luckiest Guy", cursive;
-    span {
-      color: #ffffff;
-      -webkit-text-stroke: 1px black;
-      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-    }
   }
 
   h2 {
     font-size: 1.5rem;
     font-family: "Luckiest Guy", cursive;
-    span {
-      color: #ff4d00;
-      -webkit-text-stroke: 1px black;
-      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-    }
   }
 
   .card {
@@ -35,6 +30,7 @@ const PageWrapper = styled.div`
     border-bottom-right-radius: 40px;
     width: 600px;
     margin: 0 auto;
+    box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.45);
   }
 
   @media (max-width: 768px) {
@@ -42,6 +38,13 @@ const PageWrapper = styled.div`
     .card {
       width: 100%;
     }
+  }
+
+  .modal {
+    background: rgba(26, 26, 26, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 `;
 
@@ -66,11 +69,18 @@ const Output = styled.div`
   margin-top: 20px;
   font-weight: bold;
   font-size: 18px;
+  color: red;
 `;
 
-function ChakamUpload() {
+type ChakamUploadProps = {
+  onUploadComplete: () => void;
+};
+
+function ChakamUpload({ onUploadComplete }: ChakamUploadProps) {
   const [text, setText] = useState("");
   const [output, setOutput] = useState("");
+  const [error, setError] = useState("");
+  const [modal, setModal] = useState(false);
 
   const handleTextChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setText(e.target.value);
@@ -91,9 +101,10 @@ function ChakamUpload() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (text.trim()) {
-      setOutput(`"${text.trim()}"\nCHAKAM`);
+      setOutput(text.trim());
+      setModal(true);
     } else {
-      setOutput("Please enter some text or upload a file.");
+      setError("Please enter some text or upload a file.");
     }
   };
 
@@ -124,46 +135,185 @@ function ChakamUpload() {
               />
             </div>
             <h2 className="text-center mb-2">Or</h2>
-            <div className="flex items-center justify-center w-full mb-4">
-              <label
-                htmlFor="dropzone-file"
-                className="flex flex-col items-center justify-center w-full border-2 border-dashed rounded-lg relative">
-                <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                  <svg
-                    className="w-8 h-8 mb-4"
-                    aria-hidden="true"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 20 16">
-                    <path
-                      stroke="currentColor"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
-                    />
-                  </svg>
-                  <p className="mb-2">
-                    <span>Click to upload</span>
-                  </p>
-                  <p>SVG, PNG, JPG (MAX. 2MB)</p>
-                </div>
-                <FileInput
-                  type="file"
-                  accept=".jpg,.png,.svg"
-                  onChange={handleFileChange}
-                />
-              </label>
-            </div>
+            {!text && (
+              <div className="flex items-center justify-center w-full mb-4">
+                <label
+                  htmlFor="dropzone-file"
+                  className="flex flex-col items-center justify-center w-full border-2 border-dashed rounded-lg relative">
+                  <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                    <svg
+                      className="w-8 h-8 mb-4"
+                      aria-hidden="true"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 20 16">
+                      <path
+                        stroke="currentColor"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
+                      />
+                    </svg>
+                    <p className="mb-2">
+                      <span>Click to upload</span>
+                    </p>
+                    <p>SVG, PNG, JPG (MAX. 2MB)</p>
+                  </div>
+                  <FileInput
+                    type="file"
+                    accept=".jpg,.png,.svg"
+                    onChange={handleFileChange}
+                  />
+                </label>
+              </div>
+            )}
             <button type="submit" className="w-[100%]">
               Chakam Me! 📸
             </button>
           </form>
-          {output && <Output>{output}</Output>}
+          {error && <Output>{error}</Output>}
         </div>
       </FadeInOnScroll>
+      {modal && (
+        <ChakamModal
+          onUploadComplete={onUploadComplete}
+          userValue={output}
+          handleSetModal={setModal}
+        />
+      )}
     </PageWrapper>
   );
 }
 
 export default ChakamUpload;
+
+type ChakamModalProps = {
+  userValue: string;
+  handleSetModal: (value: boolean) => void;
+  onUploadComplete: () => void;
+};
+
+const CloseButton = styled.button`
+  padding: 0px !important;
+`;
+
+const DisplayCard = styled.div`
+  .preview_card {
+    border: 4px solid #1a1a1a;
+    border-radius: 10px;
+    width: 100%;
+    min-height: 200px;
+    text-align: left;
+    display: flex;
+    align-items: start;
+    justify-content: center;
+    flex-direction: column;
+    background: #fff8f0;
+  }
+
+  p {
+    font-size: 1.2rem;
+  }
+
+  h4 {
+    font-family: "Luckiest Guy", cursive;
+    font-size: 2rem;
+    color: #ff4d00;
+    -webkit-text-stroke: 1px black;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+  }
+`;
+
+export const ChakamModal = ({
+  userValue,
+  handleSetModal,
+  onUploadComplete,
+}: ChakamModalProps) => {
+  const ref = useRef<HTMLDivElement>(null);
+
+  const downloadImage = async () => {
+    if (ref.current === null) return;
+
+    await new Promise((resolve) => setTimeout(resolve, 100));
+
+    const originalHeight = ref.current.style.height;
+    ref.current.style.height = `${ref.current.scrollHeight}px`;
+
+    toPng(ref.current, {
+      cacheBust: true,
+      pixelRatio: 2,
+    })
+      .then((dataUrl) => {
+        const link = document.createElement("a");
+        link.download = "quote.png";
+        link.href = dataUrl;
+        link.click();
+      })
+      .catch((error) => {
+        console.error("Error exporting image", error);
+      })
+      .finally(() => {
+        ref.current!.style.height = originalHeight;
+      });
+  };
+
+  const createPost = async () => {
+    const postRef = collection(db, "feeds");
+
+    const doc = await addDoc(postRef, {
+      userValue,
+      authorId: Math.random().toString(36).substring(2, 10),
+      createdAt: serverTimestamp(),
+    });
+
+    handleSetModal(false);
+    onUploadComplete();
+
+    return doc.id;
+  };
+
+  return (
+    <div className="fixed top-0 right-0 left-0 z-50 modal w-full md:inset-0 h-[calc(100%)] max-h-full">
+      <div className="p-4 w-full max-w-md md:inset-0 m-auto">
+        <div className="p-4 bg-white text-end rounded-lg shadow-sm dark:bg-gray-700">
+          <CloseButton
+            onClick={() => handleSetModal(false)}
+            type="button"
+            className="w-8 h-8 me-auto inline-flex justify-center items-center"
+            data-modal-hide="popup-modal">
+            <svg
+              className="w-3 h-3"
+              aria-hidden="true"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 14 14">
+              <path
+                stroke="currentColor"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"
+              />
+            </svg>
+            <span className="sr-only">Close modal</span>
+          </CloseButton>
+          <DisplayCard className="mt-3">
+            <div ref={ref} className="p-4 preview_card">
+              <p className="mb-3">{userValue}</p>
+              <h4>chakam</h4>
+            </div>
+          </DisplayCard>
+          <div className="mt-4 text-start flex gap-2 flex-wrap">
+            <button onClick={() => createPost()} type="button">
+              Post
+            </button>
+            <button type="button" onClick={downloadImage}>
+              Download
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
