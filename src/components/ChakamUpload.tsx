@@ -137,54 +137,52 @@ function ChakamUpload({ onUploadComplete }: ChakamUploadProps) {
             <h2>Create Your Chakam</h2>
           </div>
           <form onSubmit={handleSubmit}>
-            {!selectedFile && (
-              <div className="space-y-2 mb-2">
-                <label className="font-medium text-lg" htmlFor="statement">
-                  Your Statement:
-                </label>
-                <Input
-                  id="statement"
-                  className="mt-2"
-                  placeholder="e.g., Pineapple belongs on pizza..."
-                  value={text}
-                  onChange={handleTextChange}
-                />
-              </div>
-            )}
+            <div className="space-y-2 mb-2">
+              <label className="font-medium text-lg" htmlFor="statement">
+                Your Statement:
+              </label>
+              <Input
+                id="statement"
+                className="mt-2"
+                placeholder="e.g., Pineapple belongs on pizza..."
+                value={text}
+                onChange={handleTextChange}
+              />
+            </div>
+
             <h2 className="text-center mb-2">Or</h2>
-            {!text && (
-              <div className="flex items-center justify-center w-full mb-4">
-                <label
-                  htmlFor="dropzone-file"
-                  className="flex flex-col items-center justify-center w-full border-2 border-dashed rounded-lg relative">
-                  <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                    <svg
-                      className="w-8 h-8 mb-4"
-                      aria-hidden="true"
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 20 16">
-                      <path
-                        stroke="currentColor"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
-                      />
-                    </svg>
-                    <p className="mb-2">
-                      <span>Click to upload</span>
-                    </p>
-                    <p>SVG, PNG, JPG (MAX. 2MB)</p>
-                  </div>
-                  <FileInput
-                    type="file"
-                    accept=".jpg,.png,.svg"
-                    onChange={handleFileChange}
-                  />
-                </label>
-              </div>
-            )}
+
+            <div className="flex items-center justify-center w-full mb-4">
+              <label
+                htmlFor="dropzone-file"
+                className="flex flex-col items-center justify-center w-full border-2 border-dashed rounded-lg relative">
+                <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                  <svg
+                    className="w-8 h-8 mb-4"
+                    aria-hidden="true"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 20 16">
+                    <path
+                      stroke="currentColor"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
+                    />
+                  </svg>
+                  <p className="mb-2">
+                    <span>Click to upload</span>
+                  </p>
+                  <p>SVG, PNG, JPG (MAX. 2MB)</p>
+                </div>
+                <FileInput
+                  type="file"
+                  accept=".jpg,.png,.svg"
+                  onChange={handleFileChange}
+                />
+              </label>
+            </div>
 
             <button type="submit" className="w-[100%]">
               Chakam Me! 📸
@@ -311,7 +309,7 @@ export const ChakamModal = ({
 
       const fileRef = storageRef(
         storage,
-        `uploads/${Date.now()}-${imageUrlValue.name}`
+        `chakam/${Date.now()}-${imageUrlValue.name}`
       );
       await uploadBytes(fileRef, imageUrlValue);
       const url = await getDownloadURL(fileRef);
@@ -326,6 +324,7 @@ export const ChakamModal = ({
       });
 
       handleSetModal(false);
+      onUploadComplete();
 
       return doc.id;
     } catch (error) {

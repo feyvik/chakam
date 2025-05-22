@@ -136,6 +136,7 @@ function ChakamFeeds({ refreshKey, onUploadComplete }: ChakamFeedsProps) {
                   <DeletePost
                     postId={item.id}
                     onUploadComplete={onUploadComplete}
+                    imagePath={item.userValue}
                   />
                 </div>
                 {item.postType === "text" ? (

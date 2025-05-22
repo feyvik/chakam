@@ -2,19 +2,28 @@
 
 import { useState, useRef, useEffect } from "react";
 import { doc, deleteDoc } from "firebase/firestore";
-import { db } from "../firebase-config";
+import { db, storage } from "../firebase-config";
+import { ref, deleteObject } from "firebase/storage";
 
 interface DeletePostProps {
   postId: string;
   onUploadComplete: () => void;
+  imagePath: string | undefined;
 }
 
-const DeletePost = ({ postId, onUploadComplete }: DeletePostProps) => {
+const DeletePost = ({
+  postId,
+  onUploadComplete,
+  imagePath,
+}: DeletePostProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   const deletePost = async () => {
     try {
+      const fileRef = ref(storage, imagePath); // e.g., "uploads/image.jpg"
+      await deleteObject(fileRef);
+
       await deleteDoc(doc(db, "feeds", postId));
       onUploadComplete();
     } catch (error) {
