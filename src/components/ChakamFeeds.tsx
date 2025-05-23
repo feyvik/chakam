@@ -11,10 +11,10 @@ import useAuth from "../hooks/useAuth";
 const PageWrapper = styled.div`
   width: 100%;
   min-height: 100vh;
-  padding: 60px 60px;
+  padding: 20px 60px 60px 60px;
 
   @media (max-width: 768px) {
-    padding: 60px 20px;
+    padding: 20px 20px;
   }
 
   button {
@@ -119,7 +119,7 @@ function ChakamFeeds({ refreshKey, onUploadComplete }: ChakamFeedsProps) {
 
   useEffect(() => {
     getAllPosts();
-  }, [refreshKey]);
+  }, [posts, refreshKey, user]);
 
   return (
     <PageWrapper>
@@ -128,7 +128,7 @@ function ChakamFeeds({ refreshKey, onUploadComplete }: ChakamFeedsProps) {
           posts.map((item) => (
             <div key={item.id} className="w-[100%] content p-4 animate-fade-in">
               <div className="grid gap-4 card">
-                {item.authorId === user.id && (
+                {item.authorId === user.uid && (
                   <div className="text-end">
                     <DeletePost
                       postId={item.id}

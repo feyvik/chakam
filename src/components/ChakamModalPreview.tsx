@@ -10,6 +10,7 @@ import {
   ref as storageRef,
 } from "firebase/storage";
 import { signInAnonymously } from "firebase/auth";
+import useAuth from "../hooks/useAuth";
 
 type ChakamModalPreviewProps = {
   userValue: string;
@@ -64,6 +65,7 @@ export const ChakamModalPreview = ({
 }: ChakamModalPreviewProps) => {
   const ref = useRef<HTMLDivElement>(null);
   const [loading, setLoading] = useState(false);
+  const { user } = useAuth();
 
   const downloadImage = async () => {
     setLoading(true);
@@ -101,7 +103,7 @@ export const ChakamModalPreview = ({
 
     const doc = await addDoc(postRef, {
       userValue,
-      authorId: Math.random().toString(36).substring(2, 10),
+      authorId: user.uid,
       createdAt: serverTimestamp(),
       postType: "text",
     });

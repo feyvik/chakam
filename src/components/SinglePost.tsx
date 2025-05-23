@@ -97,6 +97,7 @@ const CommentFeed = styled.div`
 `;
 
 interface Post {
+  authorId: string;
   id: string;
   userValue?: string;
   userId?: string;
@@ -171,7 +172,7 @@ function SinglePost() {
       getSinglePost(id);
       fetchComments(id);
     }
-  }, [fetchComments, id, refreshKey]);
+  }, [fetchComments, id, refreshKey, singlePost, user]);
 
   return (
     <PageWrapper>
@@ -217,7 +218,7 @@ function SinglePost() {
                                     message.createdAt.seconds * 1000
                                   ).toLocaleString()}
                                 </span>
-                                {singlePost.userId === user.id && (
+                                {singlePost.authorId === user.uid && (
                                   <div className="flex-1 text-end">
                                     <DeleteComment
                                       postId={singlePost.id}
