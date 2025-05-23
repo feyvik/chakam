@@ -1,15 +1,15 @@
 /** @format */
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
 import FadeInOnScroll from "../components/FadeInOnScroll";
 import clickSound from "../assets/camera.wav";
 import { ChakamModalPreview } from "./ChakamModalPreview";
+import ReactDOM from "react-dom";
 
 const PageWrapper = styled.div`
   width: 100%;
   padding: 60px 60px 20px 60px;
-
   position: relative;
 
   h1 {
@@ -42,25 +42,6 @@ const PageWrapper = styled.div`
       width: 100%;
     }
   }
-
-  .modal {
-    background: rgba(26, 26, 26, 0.5);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .imageCard {
-    border: 4px solid #333333;
-    border-radius: 10px;
-    width: 100%;
-    min-height: 200px;
-    text-align: left;
-    display: flex;
-    align-items: start;
-    justify-content: center;
-    flex-direction: column;
-  }
 `;
 
 const Input = styled.textarea`
@@ -80,6 +61,7 @@ const FileInput = styled.input`
   height: 100%;
   cursor: pointer;
   opacity: 0;
+  z-index: 0 !important;
 `;
 
 const Output = styled.div`
@@ -122,10 +104,20 @@ function ChakamUpload({ onUploadComplete }: ChakamUploadProps) {
       sound.play();
       setOutputText(text.trim());
       setModal(true);
+      setText("");
     } else {
       setError("Please enter some text or upload a file.");
     }
   };
+
+  useEffect(() => {
+    if (modal) {
+      document.body.style.overflow = "hidden";
+      return () => {
+        document.body.style.overflow = "";
+      };
+    }
+  }, [modal]);
 
   return (
     <PageWrapper>
@@ -206,17 +198,20 @@ function ChakamUpload({ onUploadComplete }: ChakamUploadProps) {
           </div>
         )}
       </FadeInOnScroll>
-      {modal && (
-        <ChakamModalPreview
-          onUploadComplete={onUploadComplete}
-          userValue={outputText}
-          handleSetModal={setModal}
-          imageUrlValue={selectedFile}
-          handleSetSelectedFile={setSelectedFile}
-          handleSetOutputText={setOutputText}
-          handleSetPostInitialized={setPostInitialized}
-        />
-      )}
+      {modal &&
+        typeof window !== "undefined" &&
+        ReactDOM.createPortal(
+          <ChakamModalPreview
+            onUploadComplete={onUploadComplete}
+            userValue={outputText}
+            handleSetModal={setModal}
+            imageUrlValue={selectedFile}
+            handleSetSelectedFile={setSelectedFile}
+            handleSetOutputText={setOutputText}
+            handleSetPostInitialized={setPostInitialized}
+          />,
+          document.body
+        )}
     </PageWrapper>
   );
 }

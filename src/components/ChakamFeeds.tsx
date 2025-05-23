@@ -10,7 +10,7 @@ import useAuth from "../hooks/useAuth";
 
 const PageWrapper = styled.div`
   width: 100%;
-  min-height: 100vh;
+  min-height: 80vh;
   padding: 20px 60px 60px 60px;
 
   @media (max-width: 768px) {
@@ -20,6 +20,22 @@ const PageWrapper = styled.div`
   button {
     box-shadow: none;
     color: #333333;
+  }
+
+  .empty_state {
+    min-height: 80vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    h1 {
+      font-size: 2rem;
+      font-family: "Luckiest Guy", cursive;
+      text-align: center;
+    }
+
+    p {
+      font-size: 1.3rem;
+    }
   }
 
   .thread {
@@ -38,7 +54,7 @@ const PageWrapper = styled.div`
       height: 100%;
     }
 
-    .imageCard {
+    .imageFeeds {
       width: 100%;
       overflow: hidden;
       height: 300px;
@@ -119,46 +135,58 @@ function ChakamFeeds({ refreshKey, onUploadComplete }: ChakamFeedsProps) {
 
   useEffect(() => {
     getAllPosts();
+    console.log({ posts });
   }, [posts, refreshKey, user]);
 
   return (
     <PageWrapper>
-      <div className="thread grid grid-cols-1 sm:grid-cols-2  lg:grid-cols-3  gap-4">
-        {posts &&
-          posts.map((item) => (
-            <div key={item.id} className="w-[100%] content p-4 animate-fade-in">
-              <div className="grid gap-4 card">
-                {item.authorId === user.uid && (
-                  <div className="text-end">
-                    <DeletePost
-                      postId={item.id}
-                      onUploadComplete={onUploadComplete}
-                      imagePath={item.userValue}
-                      postType={item.postType}
-                    />
-                  </div>
-                )}
-                {item.postType === "text" ? (
-                  <DisplayCard className="mt-3">
-                    <div className="p-4 preview_card">
-                      <p className="mb-3"> {item.userValue}</p>
-                      <h4>chakam</h4>
+      {posts.length > 0 ? (
+        <div className="thread grid grid-cols-1 sm:grid-cols-2  lg:grid-cols-3  gap-4">
+          {posts &&
+            posts.map((item) => (
+              <div
+                key={item.id}
+                className="w-[100%] content p-4 animate-fade-in">
+                <div className="grid gap-4 card">
+                  {item.authorId === user.uid && (
+                    <div className="text-end">
+                      <DeletePost
+                        postId={item.id}
+                        onUploadComplete={onUploadComplete}
+                        imagePath={item.userValue}
+                        postType={item.postType}
+                      />
                     </div>
-                  </DisplayCard>
-                ) : (
-                  <div className="imageCard">
-                    <img src={item.userValue} alt={item.postType} />
+                  )}
+                  {item.postType === "text" ? (
+                    <DisplayCard className="mt-3">
+                      <div className="p-4 preview_card">
+                        <p className="mb-3"> {item.userValue}</p>
+                        <h4>chakam</h4>
+                      </div>
+                    </DisplayCard>
+                  ) : (
+                    <div className="imageFeeds">
+                      <img src={item.userValue} alt={item.postType} />
+                    </div>
+                  )}
+                  <div className="px-4 mt-4 w-[100%] self-end md:text-end">
+                    <Link to={`/single-feed/${item.id}`}>
+                      <button type="button">Comment</button>
+                    </Link>
                   </div>
-                )}
-                <div className="px-4 mt-4 w-[100%] self-end md:text-end">
-                  <Link to={`/single-feed/${item.id}`}>
-                    <button type="button">Comment</button>
-                  </Link>
                 </div>
               </div>
-            </div>
-          ))}
-      </div>
+            ))}
+        </div>
+      ) : (
+        <div className="empty_state">
+          <div className="w-[100%] text-center">
+            <h1>Oops! Looks Like There's Nothing Here</h1>
+            <p>Be the First to Share a Moment!</p>
+          </div>
+        </div>
+      )}
     </PageWrapper>
   );
 }

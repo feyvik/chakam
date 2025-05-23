@@ -68,7 +68,6 @@ export const ChakamModalPreview = ({
   const { user } = useAuth();
 
   const downloadImage = async () => {
-    setLoading(true);
     if (ref.current === null) return;
 
     await new Promise((resolve) => setTimeout(resolve, 100));
@@ -85,13 +84,11 @@ export const ChakamModalPreview = ({
         link.download = "quote.png";
         link.href = dataUrl;
         link.click();
-        setLoading(false);
       })
       .catch((error) => {
         console.error("Error exporting image", error);
       })
       .finally(() => {
-        setLoading(false);
         ref.current!.style.height = originalHeight;
       });
   };
@@ -141,7 +138,7 @@ export const ChakamModalPreview = ({
 
       const doc = await addDoc(postRef, {
         userValue: url,
-        authorId: Math.random().toString(36).substring(2, 10),
+        authorId: user.uid,
         createdAt: serverTimestamp(),
         postType: "url",
       });
@@ -157,12 +154,19 @@ export const ChakamModalPreview = ({
     }
   };
 
+  const handleStateReset = () => {
+    handleSetModal(false);
+    setLoading(false);
+    handleSetSelectedFile(null);
+    handleSetOutputText("");
+  };
+
   return (
-    <div className="fixed top-0 right-0 left-0 z-50 modal w-full md:inset-0 h-[calc(100%)] max-h-full">
+    <div className="modal">
       <div className="p-4 w-full max-w-md md:inset-0 m-auto">
         <div className="p-4 bg-white text-end rounded-lg shadow-sm dark:bg-gray-700">
           <CloseButton
-            onClick={() => handleSetModal(false)}
+            onClick={() => handleStateReset()}
             type="button"
             className="w-8 h-8 me-auto inline-flex justify-center items-center"
             data-modal-hide="popup-modal">
