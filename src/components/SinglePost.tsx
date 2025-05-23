@@ -31,7 +31,7 @@ const PageWrapper = styled.div`
     margin: 0 auto;
     position: relative;
     background: #ffffff;
-    border: 2px solid #1a1a1a;
+    border: 2px solid #333333;
     border-radius: 10px;
   }
 
@@ -41,11 +41,22 @@ const PageWrapper = styled.div`
       width: 100%;
     }
   }
+
+  .imageCard {
+    width: 100%;
+    overflow: hidden;
+    height: 300px;
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+  }
 `;
 
 const DisplayCard = styled.div`
   .preview_card {
-    border: 4px solid #1a1a1a;
+    border: 4px solid #333333;
     border-radius: 10px;
     width: 100%;
     min-height: 200px;
@@ -54,7 +65,8 @@ const DisplayCard = styled.div`
     align-items: start;
     justify-content: center;
     flex-direction: column;
-    background: #fff8f0;
+    background: #ff4d00;
+    color: #1a1a1a;
   }
 
   p {
@@ -64,8 +76,8 @@ const DisplayCard = styled.div`
   h4 {
     font-family: "Luckiest Guy", cursive;
     font-size: 2rem;
-    color: #ff4d00;
-    -webkit-text-stroke: 1px black;
+    color: #ffffff;
+    -webkit-text-stroke: 1px #333333;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
   }
 `;
@@ -89,6 +101,7 @@ interface Post {
   userValue?: string;
   userId?: string;
   createdAt?: unknown;
+  postType: string;
 }
 
 export interface Comment {
@@ -98,6 +111,7 @@ export interface Comment {
   createdAt: CreatedAt;
   content: string;
   likedBy: string[];
+  photoURL: string;
 }
 
 export interface CreatedAt {
@@ -143,6 +157,7 @@ function SinglePost() {
           createdAt: data.createdAt ?? { seconds: 0, nanoseconds: 0 },
           content: data.content ?? "",
           likedBy: data.likedBy ?? [],
+          photoURL: data.photoURL,
         } as Comment;
       });
       setComments(commentList);
@@ -164,12 +179,18 @@ function SinglePost() {
         <div className="thread px-2">
           {singlePost ? (
             <>
-              <DisplayCard className="mt-3">
-                <div className="p-4 preview_card">
-                  <p className="mb-3"> {singlePost?.userValue}</p>
-                  <h4>chakam</h4>
+              {singlePost.postType === "text" ? (
+                <DisplayCard className="mt-3">
+                  <div className="p-4 preview_card">
+                    <p className="mb-3"> {singlePost?.userValue}</p>
+                    <h4>chakam</h4>
+                  </div>
+                </DisplayCard>
+              ) : (
+                <div className="imageCard p-4 mt-2">
+                  <img src={singlePost.userValue} alt={singlePost.postType} />
                 </div>
-              </DisplayCard>
+              )}
               <CommentFeed className="py-4">
                 <div className="feeds_overview overflow-auto">
                   {comments &&
@@ -182,29 +203,31 @@ function SinglePost() {
                             <div className="w-[100%] sm:w-[50px]">
                               <img
                                 className="w-10 h-10 rounded-full"
-                                src={user.photoURL}
+                                src={message.photoURL}
                                 alt="Jese image"
                               />
                             </div>
                             <div className="flex flex-col leading-1.5 w-[100%] sm:flex-1">
                               <div className="flex items-center space-x-2 rtl:space-x-reverse">
-                                <span className="text-sm font-semibold text-gray-900 dark:text-white">
+                                <span className="text-sm text-gray-500">
                                   {message.username}
                                 </span>
-                                <span className="text-sm font-normal text-gray-500 dark:text-gray-400">
+                                <span className="text-sm text-gray-500">
                                   {new Date(
                                     message.createdAt.seconds * 1000
                                   ).toLocaleString()}
                                 </span>
-                                <div className="flex-1 text-end">
-                                  <DeleteComment
-                                    postId={singlePost.id}
-                                    onUploadComplete={triggerRefresh}
-                                    commentId={message.id}
-                                  />
-                                </div>
+                                {singlePost.userId === user.id && (
+                                  <div className="flex-1 text-end">
+                                    <DeleteComment
+                                      postId={singlePost.id}
+                                      onUploadComplete={triggerRefresh}
+                                      commentId={message.id}
+                                    />
+                                  </div>
+                                )}
                               </div>
-                              <p className="text-sm font-normal py-2 text-gray-900 dark:text-white">
+                              <p className="py-2 text-gray-900 dark:text-white">
                                 {message.content}
                               </p>
 
@@ -248,7 +271,7 @@ const Input = styled.div`
     width: 100%;
     height: 60px;
     font-size: 16px;
-    border: 2px solid #1a1a1a;
+    border: 2px solid #333333;
     border-radius: 10px;
     padding: 12px 10px;
     outline: none;
@@ -256,6 +279,7 @@ const Input = styled.div`
 `;
 
 interface UserInfo {
+  photoURL: string;
   uid: string;
   displayName: string;
 }
@@ -272,8 +296,10 @@ export const ReplyBox = ({
   onUploadComplete,
 }: ReplyBoxProps) => {
   const [reply, setReply] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const submitTextPost = async () => {
+    setLoading(true);
     if (!userInfo) {
       console.error("User not logged in");
       return;
@@ -289,6 +315,7 @@ export const ReplyBox = ({
         content: reply,
         userId: userInfo.uid,
         username: userInfo.displayName,
+        photoURL: userInfo.photoURL,
         createdAt: Timestamp.now(),
         likedBy: [],
       });
@@ -310,7 +337,9 @@ export const ReplyBox = ({
             placeholder="name@flowbite.com"
           />
           <div className="">
-            <button onClick={() => submitTextPost()}>Comment</button>
+            <button onClick={() => submitTextPost()}>
+              {loading ? "Commenting..." : "Comment"}
+            </button>
           </div>
         </div>
       </Input>
@@ -380,7 +409,7 @@ export const VotingButton = ({
     }
   };
   return (
-    <div className="flex items-center justify-between">
+    <div className="flex items-center justify-start">
       {liked ? (
         <svg
           onClick={toggleLike}

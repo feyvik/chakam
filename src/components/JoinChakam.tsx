@@ -17,7 +17,7 @@ const PageWrapper = styled.div`
   }
 
   .card {
-    background-color: #1a1a1a;
+    background-color: #333333;
     color: #fff8f0;
     width: 100%;
     padding: 12px 18px;

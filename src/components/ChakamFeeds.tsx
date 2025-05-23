@@ -1,12 +1,12 @@
 /** @format */
 
 import styled from "styled-components";
-import FadeInOnScroll from "../components/FadeInOnScroll";
 import { Link } from "react-router-dom";
 import { collection, getDocs, query, orderBy } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { db } from "./../firebase-config";
 import DeletePost from "./DeletePost";
+import useAuth from "../hooks/useAuth";
 
 const PageWrapper = styled.div`
   width: 100%;
@@ -17,49 +17,43 @@ const PageWrapper = styled.div`
     padding: 60px 20px;
   }
 
+  button {
+    box-shadow: none;
+    color: #333333;
+  }
+
   .thread {
-    img {
-      border: 4px solid #1a1a1a;
-      height: 300px;
-      width: 100%;
+    .content {
       border-radius: 10px;
+      box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.45);
+      padding: 12px 18px;
+      border-top-left-radius: 40px;
+      border-bottom-right-radius: 40px;
+      background: #ffffff;
+      border: 2px solid #333333;
     }
-  }
 
-  .col {
-    display: flex;
-    flex-direction: column;
-    text-align: left;
-    width: 100%;
-    justify-content: center;
-  }
+    .card {
+      width: 100%;
+      height: 100%;
+    }
 
-  .content {
-    border-radius: 10px;
-    box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.45);
-  }
-
-  .imageCard {
-    border-radius: 10px;
-    width: 100%;
-    height: 300px;
-    text-align: left;
-    display: flex;
-    align-items: start;
-    justify-content: center;
-    flex-direction: column;
-    img {
-      max-height: 100%;
-      max-width: 100%;
-      height: auto;
-      width: auto;
+    .imageCard {
+      width: 100%;
+      overflow: hidden;
+      height: 300px;
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+      }
     }
   }
 `;
 
 const DisplayCard = styled.div`
   .preview_card {
-    border: 4px solid #1a1a1a;
+    border: 4px solid #333333;
     border-radius: 10px;
     width: 100%;
     min-height: 200px;
@@ -68,7 +62,8 @@ const DisplayCard = styled.div`
     align-items: start;
     justify-content: center;
     flex-direction: column;
-    background: #fff8f0;
+    background: #ff4d00;
+    color: #1a1a1a;
   }
 
   p {
@@ -78,8 +73,8 @@ const DisplayCard = styled.div`
   h4 {
     font-family: "Luckiest Guy", cursive;
     font-size: 2rem;
-    color: #ff4d00;
-    -webkit-text-stroke: 1px black;
+    color: #ffffff;
+    -webkit-text-stroke: 1px #333333;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
   }
 `;
@@ -98,6 +93,7 @@ type Post = {
 
 function ChakamFeeds({ refreshKey, onUploadComplete }: ChakamFeedsProps) {
   const [posts, setPosts] = useState<Post[]>([]);
+  const { user } = useAuth();
 
   const getAllPosts = async () => {
     try {
@@ -127,18 +123,21 @@ function ChakamFeeds({ refreshKey, onUploadComplete }: ChakamFeedsProps) {
 
   return (
     <PageWrapper>
-      <div className="thread flex flex-col">
-        {posts.map((item) => (
-          <FadeInOnScroll key={item.id} direction="up" delay={0.4}>
-            <div className="w-[60%] m-h-[400px] py-6 content mx-auto bg-[#ffffff] mb-4 flex flex-col">
-              <div className="px-4 flex-1">
-                <div className="text-end">
-                  <DeletePost
-                    postId={item.id}
-                    onUploadComplete={onUploadComplete}
-                    imagePath={item.userValue}
-                  />
-                </div>
+      <div className="thread grid grid-cols-1 sm:grid-cols-2  lg:grid-cols-3  gap-4">
+        {posts &&
+          posts.map((item) => (
+            <div key={item.id} className="w-[100%] content p-4 animate-fade-in">
+              <div className="grid gap-4 card">
+                {item.authorId === user.id && (
+                  <div className="text-end">
+                    <DeletePost
+                      postId={item.id}
+                      onUploadComplete={onUploadComplete}
+                      imagePath={item.userValue}
+                      postType={item.postType}
+                    />
+                  </div>
+                )}
                 {item.postType === "text" ? (
                   <DisplayCard className="mt-3">
                     <div className="p-4 preview_card">
@@ -151,15 +150,14 @@ function ChakamFeeds({ refreshKey, onUploadComplete }: ChakamFeedsProps) {
                     <img src={item.userValue} alt={item.postType} />
                   </div>
                 )}
-              </div>
-              <div className="px-4 mt-4 w-[100%] md:text-end">
-                <Link to={`/single-feed/${item.id}`}>
-                  <button type="button">Comment</button>
-                </Link>
+                <div className="px-4 mt-4 w-[100%] self-end md:text-end">
+                  <Link to={`/single-feed/${item.id}`}>
+                    <button type="button">Comment</button>
+                  </Link>
+                </div>
               </div>
             </div>
-          </FadeInOnScroll>
-        ))}
+          ))}
       </div>
     </PageWrapper>
   );

@@ -8,7 +8,7 @@ const PageWrapper = styled.div`
   width: 100%;
   min-height: 100vh;
   padding: 60px 60px;
-  background-color: #1a1a1a;
+  background-color: #333333;
   h1 {
     font-size: 2rem;
     font-family: "Luckiest Guy", cursive;

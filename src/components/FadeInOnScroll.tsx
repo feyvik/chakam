@@ -34,9 +34,10 @@ export default function FadeInOnScroll({
   useEffect(() => {
     if (inView) {
       controls.start({ opacity: 1, x: 0, y: 0 });
-    } else {
-      controls.start({ opacity: 0, ...variants[direction] });
     }
+    // else {
+    //   controls.start({ opacity: 0, ...variants[direction] });
+    // }
   }, [inView, controls, direction, variants]);
 
   return (

@@ -9,23 +9,30 @@ interface DeletePostProps {
   postId: string;
   onUploadComplete: () => void;
   imagePath: string | undefined;
+  postType: string;
 }
 
 const DeletePost = ({
   postId,
   onUploadComplete,
   imagePath,
+  postType,
 }: DeletePostProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const [loading, setLoading] = useState(false);
 
   const deletePost = async () => {
+    setLoading(true);
     try {
-      const fileRef = ref(storage, imagePath); // e.g., "uploads/image.jpg"
-      await deleteObject(fileRef);
+      if (postType === "url") {
+        const fileRef = ref(storage, imagePath); // path like "uploads/image.jpg"
+        await deleteObject(fileRef);
+      }
 
       await deleteDoc(doc(db, "feeds", postId));
       onUploadComplete();
+      setLoading(false);
     } catch (error) {
       console.error("Error deleting post:", error);
     }
@@ -57,13 +64,13 @@ const DeletePost = ({
       </svg>
 
       {isOpen && (
-        <div className="absolute z-10 mt-2 bg-white divide-y divide-gray-100 rounded-lg shadow-sm w-44 dark:bg-gray-700">
+        <div className="absolute z-10 mt-2 right-0 bg-white divide-y divide-gray-100 rounded-lg shadow-sm w-44 dark:bg-gray-700">
           <ul className="py-2 text-sm text-gray-700 dark:text-gray-200">
             <li>
               <p
                 onClick={() => deletePost()}
                 className="px-4 py-2 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
-                Delete
+                {loading ? "Deleting..." : "Delete"}
               </p>
             </li>
           </ul>

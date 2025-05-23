@@ -56,7 +56,7 @@ const InfoCard = styled.section`
     width: 400px;
     min-height: 200px;
     padding: 12px 18px;
-    border: 4px solid #1a1a1a;
+    border: 4px solid #333333;
     box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.45);
     display: flex;
     flex-direction: column;
@@ -84,10 +84,10 @@ const InfoCard = styled.section`
 const AnimatedCard = styled.div`
   width: 400px;
   background-color: #fff8f0;
-  color: #1a1a1a;
+  color: #333333;
   min-height: 200px;
   padding: 12px 18px;
-  border: 4px solid #1a1a1a;
+  border: 4px solid #333333;
   box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.45);
   border-top-left-radius: 40px;
   border-bottom-right-radius: 40px;
@@ -120,15 +120,13 @@ function HomeHero() {
       <FadeInOnScroll direction="up" delay={0.4}>
         <div className="page_header">
           <h1>
-            Unleash Your Wit,
-            <br className="hidden md:block" />
-            Embrace the Savage Fun
+            Unleash Your Wit, <br className="hidden md:block" /> Embrace the
+            Savage Fun
           </h1>
           <p>
             Join Chakam, the social app where humor meets reality.
-            <br className="hidden md:block" />
-            Post your most outrageous lines and watch as the truth comes
-            crashing in with hilarious responses!
+            <br className="hidden md:block" /> Post your most outrageous lines
+            and watch as the truth comes crashing in with hilarious responses!
           </p>
         </div>
       </FadeInOnScroll>

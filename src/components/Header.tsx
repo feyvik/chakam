@@ -15,6 +15,9 @@ const NavWrapper = styled.nav.withConfig({
   padding: 20px 60px;
   color: #fff;
   width: 100%;
+  transition: background 0.3s ease, padding 0.3s ease;
+  box-shadow: ${({ $isscrolled }) =>
+    $isscrolled ? "0 2px 10px rgba(0, 0, 0, 0.1)" : "none"};
 
   nav {
     display: flex;
@@ -94,7 +97,7 @@ function Header() {
           <button
             onClick={handleCreateClick}
             className="transition-all duration-500 transform hover:scale-105 hover:-rotate-1">
-            Login with Google
+            Join The Fun
           </button>
         )}
       </nav>

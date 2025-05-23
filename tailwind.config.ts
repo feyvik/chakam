@@ -28,8 +28,8 @@ const config: Config = {
         },
       },
       animation: {
-        "fade-in": "fade-in 3s ease-out infinite",
-        breath: "breath 3s ease-in-out infinite",
+        "fade-in": "fade-in 3s ease-out",
+        breath: "breath 3s ease-in-out",
       },
     },
   },
