@@ -135,7 +135,6 @@ function ChakamFeeds({ refreshKey, onUploadComplete }: ChakamFeedsProps) {
 
   useEffect(() => {
     getAllPosts();
-    console.log({ posts });
   }, [posts, refreshKey, user]);
 
   return (

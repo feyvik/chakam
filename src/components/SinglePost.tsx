@@ -218,7 +218,8 @@ function SinglePost() {
                                     message.createdAt.seconds * 1000
                                   ).toLocaleString()}
                                 </span>
-                                {singlePost.authorId === user.uid && (
+
+                                {message.userId === user.uid && (
                                   <div className="flex-1 text-end">
                                     <DeleteComment
                                       postId={singlePost.id}
