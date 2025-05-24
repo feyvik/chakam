@@ -22,44 +22,53 @@ import DeleteComment from "./DeleteComment";
 
 const PageWrapper = styled.div`
   width: 100%;
-  min-height: 100vh;
-  padding: 60px 60px;
+  padding: 20px 60px;
 
   .thread {
-    min-height: 100vh;
-    width: 600px;
+    min-height: 84vh;
+    width: 100%;
     margin: 0 auto;
     position: relative;
+  }
+
+  .comment_section {
     background: #ffffff;
     border: 2px solid #333333;
     border-radius: 10px;
+    min-height: 80vh;
+  }
+
+  .comment_post {
+    background: #ffffff;
+    border: 2px solid #333333;
+    border-radius: 10px;
+    height: 100%;
   }
 
   @media (max-width: 768px) {
-    padding: 60px 20px;
+    padding: 20px 20px;
     .thread {
       width: 100%;
     }
   }
 
-  .imageCard {
+  .image_Card {
     width: 100%;
-    overflow: hidden;
+    border: 4px solid #333333;
+    border-radius: 10px;
     height: 300px;
     img {
       width: 100%;
       height: 100%;
       object-fit: contain;
+      border-radius: 10px;
     }
   }
 `;
 
 const DisplayCard = styled.div`
   .preview_card {
-    border: 4px solid #333333;
-    border-radius: 10px;
     width: 100%;
-    min-height: 200px;
     text-align: left;
     display: flex;
     align-items: start;
@@ -67,6 +76,9 @@ const DisplayCard = styled.div`
     flex-direction: column;
     background: #ff4d00;
     color: #1a1a1a;
+    height: 200px;
+    border: 4px solid #333333;
+    border-radius: 10px;
   }
 
   p {
@@ -85,7 +97,7 @@ const DisplayCard = styled.div`
 const CommentFeed = styled.div`
   width: 100%;
   .feeds_overview {
-    height: 62vh;
+    height: 68vh;
   }
   @media (max-width: 768px) {
     padding: 20px 20px;
@@ -176,22 +188,29 @@ function SinglePost() {
   return (
     <PageWrapper>
       <FadeInOnScroll direction="down" delay={0.4}>
-        <div className="thread px-2">
+        <div className="thread px-2 flex flex-col lg:flex-row gap-3">
           {singlePost ? (
             <>
-              {singlePost.postType === "text" ? (
-                <DisplayCard className="mt-3">
-                  <div className="p-4 preview_card">
-                    <p className="mb-3"> {singlePost?.userValue}</p>
-                    <h4>chakam</h4>
+              <div className="comment_post mx-auto w-[100%] md:w-[70%] lg:w-[40%]">
+                {singlePost.postType === "text" ? (
+                  <DisplayCard className="p-4">
+                    <div className="p-4 preview_card">
+                      <p className="mb-3"> {singlePost?.userValue}</p>
+                      <h4>chakam</h4>
+                    </div>
+                  </DisplayCard>
+                ) : (
+                  <div className="p-4">
+                    <div className="image_Card">
+                      <img
+                        src={singlePost.userValue}
+                        alt={singlePost.postType}
+                      />
+                    </div>
                   </div>
-                </DisplayCard>
-              ) : (
-                <div className="imageCard p-4 mt-2">
-                  <img src={singlePost.userValue} alt={singlePost.postType} />
-                </div>
-              )}
-              <div className="relative">
+                )}
+              </div>
+              <div className="relative comment_section mx-auto md:w-[70%] w-[100%] lg:w-[80%]">
                 <CommentFeed className="py-4">
                   <div className="feeds_overview overflow-auto">
                     {comments &&
@@ -324,6 +343,7 @@ export const ReplyBox = ({
       });
       onUploadComplete();
       setReply("");
+      setLoading(false);
     } catch (error) {
       console.error("Error saving post:", error);
     }
