@@ -25,7 +25,7 @@ const PageWrapper = styled.div`
   padding: 20px 60px;
 
   .thread {
-    min-height: 84vh;
+    min-height: 70vh;
     width: 100%;
     margin: 0 auto;
     position: relative;
@@ -35,7 +35,7 @@ const PageWrapper = styled.div`
     background: #ffffff;
     border: 2px solid #333333;
     border-radius: 10px;
-    min-height: 80vh;
+    min-height: 74vh;
   }
 
   .comment_post {
@@ -45,8 +45,11 @@ const PageWrapper = styled.div`
     height: 100%;
   }
 
+  @media (max-width: 1020px) {
+    padding: 20px 20px 80px 20px;
+  }
+
   @media (max-width: 768px) {
-    padding: 20px 20px;
     .thread {
       width: 100%;
     }
@@ -96,9 +99,19 @@ const DisplayCard = styled.div`
 
 const CommentFeed = styled.div`
   width: 100%;
+
   .feeds_overview {
     height: 68vh;
   }
+
+  @media (max-width: 1020px) {
+    .feeds_overview {
+      height: unset;
+      min-height: 68vh;
+      overflow: unset !important;
+    }
+  }
+
   @media (max-width: 768px) {
     padding: 20px 20px;
     .thread {
@@ -215,10 +228,8 @@ function SinglePost() {
                   <div className="feeds_overview overflow-auto">
                     {comments &&
                       comments.map((message) => (
-                        <div
-                          key={message.id}
-                          className="px-2 py-4 border-t border-radius">
-                          <div className="flex flex-col">
+                        <div key={message.id} className="px-4 py-4">
+                          <div className="flex flex-col border-s ps-4">
                             <div className="flex items-start gap-2.5 flex-wrap">
                               <div className="w-[100%] sm:w-[50px]">
                                 <img
@@ -267,7 +278,7 @@ function SinglePost() {
                       ))}
                   </div>
                 </CommentFeed>
-                <div className="w-[100%] bg-white">
+                <div className="w-[100%] bg-white rounded-[10px] fixed z-10 bottom-0 left-0">
                   <ReplyBox
                     userInfo={user}
                     postId={singlePost.id}
