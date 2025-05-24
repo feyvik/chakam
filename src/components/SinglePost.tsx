@@ -84,12 +84,11 @@ const DisplayCard = styled.div`
 
 const CommentFeed = styled.div`
   width: 100%;
-  height: 62vh;
   .feeds_overview {
     height: 62vh;
   }
   @media (max-width: 768px) {
-    padding: 60px 20px;
+    padding: 20px 20px;
     .thread {
       width: 100%;
     }
@@ -192,68 +191,70 @@ function SinglePost() {
                   <img src={singlePost.userValue} alt={singlePost.postType} />
                 </div>
               )}
-              <CommentFeed className="py-4">
-                <div className="feeds_overview overflow-auto">
-                  {comments &&
-                    comments.map((message) => (
-                      <div
-                        key={message.id}
-                        className="px-2 py-4 border-t border-radius">
-                        <div className="flex flex-col">
-                          <div className="flex items-start gap-2.5 flex-wrap">
-                            <div className="w-[100%] sm:w-[50px]">
-                              <img
-                                className="w-10 h-10 rounded-full"
-                                src={message.photoURL}
-                                alt="Jese image"
-                              />
-                            </div>
-                            <div className="flex flex-col leading-1.5 w-[100%] sm:flex-1">
-                              <div className="flex items-center space-x-2 rtl:space-x-reverse">
-                                <span className="text-sm text-gray-500">
-                                  {message.username}
-                                </span>
-                                <span className="text-sm text-gray-500">
-                                  {new Date(
-                                    message.createdAt.seconds * 1000
-                                  ).toLocaleString()}
-                                </span>
-
-                                {message.userId === user.uid && (
-                                  <div className="flex-1 text-end">
-                                    <DeleteComment
-                                      postId={singlePost.id}
-                                      onUploadComplete={triggerRefresh}
-                                      commentId={message.id}
-                                    />
-                                  </div>
-                                )}
+              <div className="relative">
+                <CommentFeed className="py-4">
+                  <div className="feeds_overview overflow-auto">
+                    {comments &&
+                      comments.map((message) => (
+                        <div
+                          key={message.id}
+                          className="px-2 py-4 border-t border-radius">
+                          <div className="flex flex-col">
+                            <div className="flex items-start gap-2.5 flex-wrap">
+                              <div className="w-[100%] sm:w-[50px]">
+                                <img
+                                  className="w-10 h-10 rounded-full"
+                                  src={message.photoURL}
+                                  alt="Jese image"
+                                />
                               </div>
-                              <p className="py-2 text-gray-900 dark:text-white">
-                                {message.content}
-                              </p>
+                              <div className="flex flex-col leading-1.5 w-[100%] sm:flex-1">
+                                <div className="flex items-center space-x-2 rtl:space-x-reverse">
+                                  <span className="text-sm text-gray-500">
+                                    {message.username}
+                                  </span>
+                                  <span className="text-sm text-gray-500">
+                                    {new Date(
+                                      message.createdAt.seconds * 1000
+                                    ).toLocaleString()}
+                                  </span>
 
-                              <VotingButton
-                                quoteId={singlePost.id}
-                                replyId={message.id}
-                                initiallyLiked={message.likedBy?.includes(
-                                  user.id
-                                )}
-                                userId={user.uid}
-                              />
+                                  {message.userId === user.uid && (
+                                    <div className="flex-1 text-end">
+                                      <DeleteComment
+                                        postId={singlePost.id}
+                                        onUploadComplete={triggerRefresh}
+                                        commentId={message.id}
+                                      />
+                                    </div>
+                                  )}
+                                </div>
+                                <p className="py-2 text-gray-900 dark:text-white">
+                                  {message.content}
+                                </p>
+
+                                <VotingButton
+                                  quoteId={singlePost.id}
+                                  replyId={message.id}
+                                  initiallyLiked={message.likedBy?.includes(
+                                    user.id
+                                  )}
+                                  userId={user.uid}
+                                />
+                              </div>
                             </div>
                           </div>
                         </div>
-                      </div>
-                    ))}
+                      ))}
+                  </div>
+                </CommentFeed>
+                <div className="w-[100%] bg-white">
+                  <ReplyBox
+                    userInfo={user}
+                    postId={singlePost.id}
+                    onUploadComplete={triggerRefresh}
+                  />
                 </div>
-              </CommentFeed>
-              <div className="absolute bottom-0 left-0 w-[100%]">
-                <ReplyBox
-                  userInfo={user}
-                  postId={singlePost.id}
-                  onUploadComplete={triggerRefresh}
-                />
               </div>
             </>
           ) : (

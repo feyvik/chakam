@@ -9,7 +9,7 @@ const FooterWrapper = styled.div`
     box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.45);
   }
   @media (max-width: 768px) {
-    padding: 60px 20px;
+    padding: 20px 20px;
   }
 `;
 

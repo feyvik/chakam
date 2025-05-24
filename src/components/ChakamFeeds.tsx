@@ -2,10 +2,8 @@
 
 import styled from "styled-components";
 import { Link } from "react-router-dom";
-import { collection, getDocs, query, orderBy } from "firebase/firestore";
-import { useEffect, useState } from "react";
-import { db } from "./../firebase-config";
 import DeletePost from "./DeletePost";
+import { useEffect } from "react";
 import useAuth from "../hooks/useAuth";
 
 const PageWrapper = styled.div`
@@ -95,11 +93,6 @@ const DisplayCard = styled.div`
   }
 `;
 
-type ChakamFeedsProps = {
-  refreshKey: number;
-  onUploadComplete: () => void;
-};
-
 type Post = {
   id: string;
   authorId?: string;
@@ -107,42 +100,27 @@ type Post = {
   postType: string;
 };
 
-function ChakamFeeds({ refreshKey, onUploadComplete }: ChakamFeedsProps) {
-  const [posts, setPosts] = useState<Post[]>([]);
+type ChakamFeedsProps = {
+  refreshKey: number;
+  onUploadComplete: () => void;
+  paginatedItems: Post[];
+};
+
+function ChakamFeeds({
+  refreshKey,
+  onUploadComplete,
+  paginatedItems,
+}: ChakamFeedsProps) {
   const { user } = useAuth();
 
-  const getAllPosts = async () => {
-    try {
-      const postRef = collection(db, "feeds");
-      const q = query(postRef, orderBy("createdAt", "desc"));
-      const snapshot = await getDocs(q);
-
-      const postList = snapshot.docs.map((doc) => {
-        const data = doc.data();
-        return {
-          id: doc.id,
-          authorId: data.authorId,
-          userValue: data.userValue,
-          postType: data.postType ?? "text", // fallback if missing
-        } as Post;
-      });
-
-      setPosts(postList);
-    } catch (error) {
-      console.error("Error fetching posts:", error);
-    }
-  };
-
-  useEffect(() => {
-    getAllPosts();
-  }, [posts, refreshKey, user]);
+  useEffect(() => {}, [refreshKey]);
 
   return (
     <PageWrapper>
-      {posts.length > 0 ? (
+      {paginatedItems.length > 0 ? (
         <div className="thread grid grid-cols-1 sm:grid-cols-2  lg:grid-cols-3  gap-4">
-          {posts &&
-            posts.map((item) => (
+          {paginatedItems &&
+            paginatedItems.map((item) => (
               <div
                 key={item.id}
                 className="w-[100%] content p-4 animate-fade-in">
