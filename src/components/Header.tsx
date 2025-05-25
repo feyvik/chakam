@@ -10,7 +10,7 @@ const NavWrapper = styled.nav.withConfig({
   shouldForwardProp: (prop) => prop !== "isscrolled",
 })<{ $isscrolled: boolean }>`
   background: ${({ $isscrolled }) => ($isscrolled ? "#fff8f0" : "#545454")};
-  position: ${({ $isscrolled }) => ($isscrolled ? "fixed" : "static")};
+  position: ${({ $isscrolled }) => ($isscrolled ? "fixed" : "")};
   z-index: ${({ $isscrolled }) => ($isscrolled ? "1" : "auto")};
   padding: 10px 60px;
   color: #fff;

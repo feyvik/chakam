@@ -8,7 +8,7 @@ import { db } from "./../firebase-config";
 import {
   collection,
   addDoc,
-  Timestamp,
+  serverTimestamp,
   doc,
   getDoc,
   getDocs,
@@ -25,17 +25,19 @@ const PageWrapper = styled.div`
   padding: 20px 60px;
 
   .thread {
-    min-height: 70vh;
     width: 100%;
     margin: 0 auto;
-    position: relative;
   }
 
   .comment_section {
     background: #ffffff;
     border: 2px solid #333333;
     border-radius: 10px;
-    min-height: 74vh;
+  }
+
+  .text_overview {
+    height: 70vh;
+    overflow: auto;
   }
 
   .comment_post {
@@ -45,21 +47,29 @@ const PageWrapper = styled.div`
     height: 100%;
   }
 
-  @media (max-width: 1020px) {
-    padding: 20px 20px 80px 20px;
+  @media (max-width: 1023px) {
+    padding: 20px 20px 112px 20px;
+
+    .text_overview {
+      overflow: unset;
+      height: unset;
+    }
+
+    .image_Card {
+      height: 300px;
+    }
   }
 
-  @media (max-width: 768px) {
-    .thread {
-      width: 100%;
-    }
+  @media (max-width: 639px) {
+    padding-bottom: 170px;
   }
 
   .image_Card {
     width: 100%;
+    border-radius: 10px;
     border: 4px solid #333333;
     border-radius: 10px;
-    height: 300px;
+
     img {
       width: 100%;
       height: 100%;
@@ -97,36 +107,19 @@ const DisplayCard = styled.div`
   }
 `;
 
-const CommentFeed = styled.div`
-  width: 100%;
-
-  .feeds_overview {
-    height: 68vh;
-  }
-
-  @media (max-width: 1020px) {
-    .feeds_overview {
-      height: unset;
-      min-height: 68vh;
-      overflow: unset !important;
-    }
-  }
-
-  @media (max-width: 768px) {
-    padding: 20px 20px;
-    .thread {
-      width: 100%;
-    }
-  }
-`;
+type textValue = {
+  statement: string;
+  reply: string;
+};
 
 interface Post {
   authorId: string;
   id: string;
-  userValue?: string;
   userId?: string;
   createdAt?: unknown;
+  userValue: textValue;
   postType: string;
+  imageUrl: string;
 }
 
 export interface Comment {
@@ -199,100 +192,101 @@ function SinglePost() {
   }, [fetchComments, id, refreshKey, singlePost, user]);
 
   return (
-    <PageWrapper>
-      <FadeInOnScroll direction="down" delay={0.4}>
-        <div className="thread px-2 flex flex-col lg:flex-row gap-3">
-          {singlePost ? (
-            <>
-              <div className="comment_post mx-auto w-[100%] md:w-[70%] lg:w-[40%]">
+    <>
+      <PageWrapper className="relative">
+        {singlePost ? (
+          <FadeInOnScroll direction="down" delay={0.4}>
+            <div className="thread px-4 flex flex-col lg:flex-row gap-3">
+              <div className="comment_post mx-auto w-[100%] md:w-[80%] lg:w-[40%]">
                 {singlePost.postType === "text" ? (
                   <DisplayCard className="p-4">
                     <div className="p-4 preview_card">
-                      <p className="mb-3"> {singlePost?.userValue}</p>
+                      <p className="mb-3"> {singlePost.userValue.statement}</p>
                       <h4>chakam</h4>
+                      <p>{singlePost.userValue.reply}</p>
                     </div>
                   </DisplayCard>
                 ) : (
                   <div className="p-4">
                     <div className="image_Card">
                       <img
-                        src={singlePost.userValue}
+                        src={singlePost.imageUrl}
                         alt={singlePost.postType}
                       />
                     </div>
                   </div>
                 )}
               </div>
-              <div className="relative comment_section mx-auto md:w-[70%] w-[100%] lg:w-[80%]">
-                <CommentFeed className="py-4">
-                  <div className="feeds_overview overflow-auto">
-                    {comments &&
-                      comments.map((message) => (
-                        <div key={message.id} className="px-4 py-4">
-                          <div className="flex flex-col border-s ps-4">
-                            <div className="flex items-start gap-2.5 flex-wrap">
-                              <div className="w-[100%] sm:w-[50px]">
-                                <img
-                                  className="w-10 h-10 rounded-full"
-                                  src={message.photoURL}
-                                  alt="Jese image"
-                                />
-                              </div>
-                              <div className="flex flex-col leading-1.5 w-[100%] sm:flex-1">
-                                <div className="flex items-center space-x-2 rtl:space-x-reverse">
-                                  <span className="text-sm text-gray-500">
-                                    {message.username}
-                                  </span>
-                                  <span className="text-sm text-gray-500">
-                                    {new Date(
-                                      message.createdAt.seconds * 1000
-                                    ).toLocaleString()}
-                                  </span>
+              <div className="comment_section px-2 py-2 mx-auto md:w-[80%] w-[100%] lg:w-[80%]">
+                <div className="text_overview">
+                  {comments &&
+                    comments.map((message) => (
+                      <div
+                        key={message.id}
+                        className="flex flex-col mb-4 border-s ps-4">
+                        <div className="flex items-start px-2 gap-2.5 py-4 flex-wrap">
+                          <div className="w-[100%] sm:w-[50px]">
+                            <img
+                              className="w-10 h-10 rounded-full"
+                              src={message.photoURL}
+                              alt="Jese image"
+                            />
+                          </div>
+                          <div className="flex flex-col leading-1.5 w-[100%] sm:flex-1">
+                            <div className="flex items-center space-x-2 rtl:space-x-reverse">
+                              <span className="text-sm text-gray-500">
+                                {message.username}
+                              </span>
+                              <span className="text-sm text-gray-500">
+                                {new Date(
+                                  message.createdAt.seconds * 1000
+                                ).toLocaleString()}
+                              </span>
 
-                                  {message.userId === user.uid && (
-                                    <div className="flex-1 text-end">
-                                      <DeleteComment
-                                        postId={singlePost.id}
-                                        onUploadComplete={triggerRefresh}
-                                        commentId={message.id}
-                                      />
-                                    </div>
-                                  )}
+                              {message.userId === user.uid && (
+                                <div className="flex-1 text-end">
+                                  <DeleteComment
+                                    postId={singlePost.id}
+                                    onUploadComplete={triggerRefresh}
+                                    commentId={message.id}
+                                  />
                                 </div>
-                                <p className="py-2 text-gray-900 dark:text-white">
-                                  {message.content}
-                                </p>
-
-                                <VotingButton
-                                  quoteId={singlePost.id}
-                                  replyId={message.id}
-                                  initiallyLiked={message.likedBy?.includes(
-                                    user.id
-                                  )}
-                                  userId={user.uid}
-                                />
-                              </div>
+                              )}
                             </div>
+                            <p className="py-2 text-gray-900 dark:text-white text-base/6">
+                              {message.content}
+                            </p>
+
+                            <VotingButton
+                              quoteId={singlePost.id}
+                              replyId={message.id}
+                              initiallyLiked={message.likedBy?.includes(
+                                user.id
+                              )}
+                              userId={user.uid}
+                            />
                           </div>
                         </div>
-                      ))}
-                  </div>
-                </CommentFeed>
-                <div className="w-[100%] bg-white rounded-[10px] fixed z-10 bottom-0 left-0">
-                  <ReplyBox
-                    userInfo={user}
-                    postId={singlePost.id}
-                    onUploadComplete={triggerRefresh}
-                  />
+                      </div>
+                    ))}
                 </div>
               </div>
-            </>
-          ) : (
-            <p>Loading...</p>
-          )}
+            </div>
+          </FadeInOnScroll>
+        ) : (
+          <p>Loading...</p>
+        )}
+      </PageWrapper>
+      {singlePost && (
+        <div className="fixed bottom-0 left-0 w-full px-[20px] md:px-[60px] py-4 bg-white z-50 border-t border-gray-300 shadow-lg">
+          <ReplyBox
+            userInfo={user}
+            postId={singlePost.id}
+            onUploadComplete={triggerRefresh}
+          />
         </div>
-      </FadeInOnScroll>
-    </PageWrapper>
+      )}
+    </>
   );
 }
 
@@ -349,7 +343,7 @@ export const ReplyBox = ({
         userId: userInfo.uid,
         username: userInfo.displayName,
         photoURL: userInfo.photoURL,
-        createdAt: Timestamp.now(),
+        createdAt: serverTimestamp(),
         likedBy: [],
       });
       onUploadComplete();
@@ -361,23 +355,22 @@ export const ReplyBox = ({
   };
 
   return (
-    <div>
-      <Input className="p-2">
-        <div className="flex flex-col md:flex-row gap-2">
-          <input
-            type="text"
-            value={reply}
-            onChange={(e) => setReply(e.target.value)}
-            placeholder="name@flowbite.com"
-          />
-          <div className="">
-            <button onClick={() => submitTextPost()}>
-              {loading ? "Commenting..." : "Comment"}
-            </button>
-          </div>
+    <Input>
+      <div className="flex flex-col sm:flex-row gap-2">
+        <input
+          type="text"
+          value={reply}
+          onChange={(e) => setReply(e.target.value)}
+          placeholder="name@flowbite.com"
+          className=" bg-white"
+        />
+        <div className="">
+          <button onClick={() => submitTextPost()}>
+            {loading ? "Commenting..." : "Comment"}
+          </button>
         </div>
-      </Input>
-    </div>
+      </div>
+    </Input>
   );
 };
 

@@ -4,7 +4,6 @@ import { useState, useRef, useEffect } from "react";
 import { doc, deleteDoc } from "firebase/firestore";
 import { db, storage } from "../firebase-config";
 import { ref, deleteObject } from "firebase/storage";
-
 interface DeletePostProps {
   postId: string;
   onUploadComplete: () => void;

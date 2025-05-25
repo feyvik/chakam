@@ -93,11 +93,17 @@ const DisplayCard = styled.div`
   }
 `;
 
+type textValue = {
+  statement: string;
+  reply: string;
+};
+
 type Post = {
   id: string;
   authorId?: string;
-  userValue?: string;
+  userValue: textValue;
   postType: string;
+  imageUrl: string;
 };
 
 type ChakamFeedsProps = {
@@ -130,7 +136,7 @@ function ChakamFeeds({
                       <DeletePost
                         postId={item.id}
                         onUploadComplete={onUploadComplete}
-                        imagePath={item.userValue}
+                        imagePath={item.imageUrl}
                         postType={item.postType}
                       />
                     </div>
@@ -138,13 +144,14 @@ function ChakamFeeds({
                   {item.postType === "text" ? (
                     <DisplayCard className="mt-3">
                       <div className="p-4 preview_card">
-                        <p className="mb-3"> {item.userValue}</p>
+                        <p className="mb-3"> {item.userValue.statement}</p>
                         <h4>chakam</h4>
+                        <p>{item.userValue.reply}</p>
                       </div>
                     </DisplayCard>
                   ) : (
                     <div className="imageFeeds">
-                      <img src={item.userValue} alt={item.postType} />
+                      <img src={item.imageUrl} alt={item.postType} />
                     </div>
                   )}
                   <div className="px-4 mt-4 w-[100%] self-end md:text-end">

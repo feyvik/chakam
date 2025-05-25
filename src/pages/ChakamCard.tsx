@@ -7,11 +7,17 @@ import ChakamUpload from "../components/ChakamUpload";
 import ChakamFeeds from "../components/ChakamFeeds";
 import { Pagination } from "../components/Pagination";
 
+type textValue = {
+  statement: string;
+  reply: string;
+};
+
 type Post = {
   id: string;
   authorId?: string;
-  userValue?: string;
+  userValue: textValue;
   postType: string;
+  imageUrl: string;
 };
 
 function ChakamCard() {
@@ -42,6 +48,8 @@ function ChakamCard() {
           id: doc.id,
           authorId: data.authorId,
           userValue: data.userValue,
+          imageUrl: data.imageUrl,
+          createdAt: data.createdAt?.toDate(),
           postType: data.postType ?? "text", // fallback if missing
         } as Post;
       });

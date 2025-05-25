@@ -44,9 +44,9 @@ const PageWrapper = styled.div`
   }
 `;
 
-const Input = styled.textarea`
+const Input = styled.input`
   width: 100%;
-  height: 100px;
+  height: 46px;
   font-size: 16px;
   border: 2px solid #333333;
   border-radius: 8px;
@@ -77,14 +77,22 @@ type ChakamUploadProps = {
 
 function ChakamUpload({ onUploadComplete }: ChakamUploadProps) {
   const [text, setText] = useState("");
-  const [outputText, setOutputText] = useState("");
+  const [textReply, setTextReply] = useState("");
+  const [outputText, setOutputText] = useState({
+    statement: "",
+    reply: "",
+  });
   const [error, setError] = useState("");
   const [modal, setModal] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [postInitialized, setPostInitialized] = useState(false);
 
-  const handleTextChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+  const handleTextChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setText(e.target.value);
+  };
+
+  const handleTextReplyChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setTextReply(e.target.value);
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -99,12 +107,14 @@ function ChakamUpload({ onUploadComplete }: ChakamUploadProps) {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (text.trim()) {
+    if (text.trim() && textReply.trim()) {
       const sound = new Audio(clickSound);
       sound.play();
-      setOutputText(text.trim());
+      setOutputText({ statement: text.trim(), reply: textReply.trim() });
       setModal(true);
       setText("");
+      setTextReply("");
+      setError("");
     } else {
       setError("Please enter some text or upload a file.");
     }
@@ -144,19 +154,31 @@ function ChakamUpload({ onUploadComplete }: ChakamUploadProps) {
               <form onSubmit={handleSubmit}>
                 <div className="space-y-2 mb-2">
                   <label className="font-medium text-lg" htmlFor="statement">
-                    Your Statement:
+                    Statement:
                   </label>
                   <Input
+                    type="text"
                     id="statement"
                     className="mt-2"
-                    placeholder="e.g., Pineapple belongs on pizza..."
+                    placeholder="“We are a family in this company”"
                     value={text}
                     onChange={handleTextChange}
                   />
                 </div>
-
+                <div className="space-y-2 mb-2">
+                  <label className="font-medium text-lg" htmlFor="statement">
+                    Reply:
+                  </label>
+                  <Input
+                    type="text"
+                    id="reply"
+                    className="mt-2"
+                    placeholder="Before I hear, 'why are you sleeping at work'"
+                    value={textReply}
+                    onChange={handleTextReplyChange}
+                  />
+                </div>
                 <h2 className="text-center mb-2">Or</h2>
-
                 <div className="flex items-center justify-center w-full mb-4">
                   <label
                     htmlFor="dropzone-file"

@@ -18,11 +18,17 @@ const PaginationWrapper = styled.div`
   }
 `;
 
+type textValue = {
+  statement: string;
+  reply: string;
+};
+
 type Post = {
   id: string;
   authorId?: string;
-  userValue?: string;
+  userValue: textValue;
   postType: string;
+  imageUrl: string;
 };
 
 type PaginationProps = {

@@ -61,3 +61,14 @@ button[disabled] {
   justify-content: center;
   flex-direction: column;
 }
+
+*::-webkit-scrollbar {
+  background-color: #e8e8e8;
+  width: 4px;
+  height: 4px;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: #6a6a6a;
+  border-radius: 10px;
+}

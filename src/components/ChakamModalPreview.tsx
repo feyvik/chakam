@@ -12,13 +12,18 @@ import {
 import { signInAnonymously } from "firebase/auth";
 import useAuth from "../hooks/useAuth";
 
+type textValue = {
+  statement: string;
+  reply: string;
+};
+
 type ChakamModalPreviewProps = {
-  userValue: string;
+  userValue: textValue;
   handleSetModal: (value: boolean) => void;
   onUploadComplete: () => void;
   imageUrlValue: File | null;
   handleSetSelectedFile: (file: File | null) => void;
-  handleSetOutputText: (value: string) => void;
+  handleSetOutputText: (value: textValue) => void;
   handleSetPostInitialized: (value: boolean) => void;
 };
 
@@ -55,9 +60,9 @@ const DisplayCard = styled.div`
 `;
 
 export const ChakamModalPreview = ({
+  onUploadComplete,
   userValue,
   handleSetModal,
-  onUploadComplete,
   imageUrlValue,
   handleSetSelectedFile,
   handleSetOutputText,
@@ -99,7 +104,10 @@ export const ChakamModalPreview = ({
     const postRef = collection(db, "feeds");
 
     const doc = await addDoc(postRef, {
-      userValue,
+      userValue: {
+        statement: userValue.statement,
+        reply: userValue.reply,
+      },
       authorId: user.uid,
       createdAt: serverTimestamp(),
       postType: "text",
@@ -108,7 +116,7 @@ export const ChakamModalPreview = ({
     handleSetModal(false);
     onUploadComplete();
     setLoading(false);
-    handleSetOutputText("");
+    handleSetOutputText({ statement: "", reply: "" });
     return doc.id;
   };
 
@@ -137,11 +145,13 @@ export const ChakamModalPreview = ({
       const postRef = collection(db, "feeds");
 
       const doc = await addDoc(postRef, {
-        userValue: url,
+        imageUrl: url,
         authorId: user.uid,
         createdAt: serverTimestamp(),
         postType: "url",
       });
+
+      console.log(doc, url);
 
       handleSetModal(false);
       onUploadComplete();
@@ -158,7 +168,7 @@ export const ChakamModalPreview = ({
     handleSetModal(false);
     setLoading(false);
     handleSetSelectedFile(null);
-    handleSetOutputText("");
+    handleSetOutputText({ statement: "", reply: "" });
   };
 
   return (
@@ -187,14 +197,17 @@ export const ChakamModalPreview = ({
             <span className="sr-only">Close modal</span>
           </CloseButton>
 
-          {userValue && (
-            <DisplayCard className="mt-3">
-              <div ref={ref} className="p-4 preview_card">
-                <p className="mb-3">{userValue}</p>
-                <h4>chakam</h4>
-              </div>
-            </DisplayCard>
-          )}
+          {userValue &&
+            userValue.reply !== "" &&
+            userValue.statement !== "" && (
+              <DisplayCard className="mt-3">
+                <div ref={ref} className="p-4 preview_card">
+                  <p className="mb-3">{userValue.statement}</p>
+                  <h4>chakam</h4>
+                  <p>{userValue.reply}</p>
+                </div>
+              </DisplayCard>
+            )}
 
           {imageUrlValue && (
             <div ref={ref} className="imageCard mt-3">
@@ -216,11 +229,13 @@ export const ChakamModalPreview = ({
               </button>
             )}
 
-            {userValue && (
-              <button type="button" onClick={downloadImage}>
-                Download
-              </button>
-            )}
+            {userValue &&
+              userValue.reply !== "" &&
+              userValue.statement !== "" && (
+                <button type="button" onClick={downloadImage}>
+                  Download
+                </button>
+              )}
           </div>
         </div>
       </div>
