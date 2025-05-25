@@ -196,8 +196,8 @@ function SinglePost() {
       <PageWrapper className="relative">
         {singlePost ? (
           <FadeInOnScroll direction="down" delay={0.4}>
-            <div className="thread px-4 flex flex-col lg:flex-row gap-3">
-              <div className="comment_post mx-auto w-[100%] md:w-[80%] lg:w-[40%]">
+            <div className="thread lg:px-4 flex flex-col lg:flex-row lg:gap-3">
+              <div className="comment_post mb-4 lg:mb-0 mx-auto w-[100%] md:w-[80%] lg:w-[40%]">
                 {singlePost.postType === "text" ? (
                   <DisplayCard className="p-4">
                     <div className="p-4 preview_card">
