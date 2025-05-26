@@ -28,6 +28,7 @@ const PageWrapper = styled.div`
     display: flex;
     justify-content: start;
     align-items: center;
+    color: #1a1a1a;
     h2 {
       font-size: 1.5rem;
       font-family: "Luckiest Guy", cursive;

@@ -20,7 +20,7 @@ function Footer() {
         <div className="w-full mx-auto max-w-screen-xl p-4 md:flex md:items-center md:justify-between">
           <span className="">© 2025 CHAKAM . All Rights Reserved.</span>
           <ul className="flex flex-wrap items-center mt-3">
-            <li>Coded with with ❤️</li>
+            <li>Coded with ❤️</li>
           </ul>
         </div>
       </footer>

@@ -6,8 +6,11 @@ import FadeInOnScroll from "../components/FadeInOnScroll";
 import clickSound from "../assets/camera.wav";
 import { ChakamModalPreview } from "./ChakamModalPreview";
 import ReactDOM from "react-dom";
+import { useDarkMode } from "../hooks/useDarkMode";
 
-const PageWrapper = styled.div`
+const PageWrapper = styled.div.withConfig({
+  shouldForwardProp: (prop) => prop !== "darkmode",
+})<{ $darkmode: boolean }>`
   width: 100%;
   padding: 60px 60px 20px 60px;
   position: relative;
@@ -27,8 +30,10 @@ const PageWrapper = styled.div`
   }
 
   .card {
+    background: ${({ $darkmode }) => ($darkmode ? "#fff8f0" : "")};
+    color: ${({ $darkmode }) => ($darkmode ? "#1a1a1a" : "")};
     padding: 20px;
-    border: 4px solid #333333;
+    border: 4px solid #1a1a1a;
     border-top-left-radius: 40px;
     border-bottom-right-radius: 40px;
     width: 600px;
@@ -48,7 +53,7 @@ const Input = styled.input`
   width: 100%;
   height: 46px;
   font-size: 16px;
-  border: 2px solid #333333;
+  border: 2px solid #1a1a1a;
   border-radius: 8px;
   padding: 12px 10px;
   box-shadow: none;
@@ -86,6 +91,7 @@ function ChakamUpload({ onUploadComplete }: ChakamUploadProps) {
   const [modal, setModal] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [postInitialized, setPostInitialized] = useState(false);
+  const { isDarkMode } = useDarkMode();
 
   const handleTextChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setText(e.target.value);
@@ -130,7 +136,7 @@ function ChakamUpload({ onUploadComplete }: ChakamUploadProps) {
   }, [modal]);
 
   return (
-    <PageWrapper>
+    <PageWrapper $darkmode={isDarkMode}>
       <FadeInOnScroll direction="up" delay={0.4}>
         <div className="text-center w-[100%]">
           <h1>Meme Maker</h1>

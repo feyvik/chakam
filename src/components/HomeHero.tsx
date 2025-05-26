@@ -53,10 +53,11 @@ const InfoCard = styled.section`
   justify-content: center;
   align-items: center;
   .card_top {
+    color: #1a1a1a;
     width: 400px;
     min-height: 200px;
     padding: 12px 18px;
-    border: 4px solid #333333;
+    border: 4px solid #1a1a1a;
     box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.45);
     display: flex;
     flex-direction: column;
@@ -84,10 +85,10 @@ const InfoCard = styled.section`
 const AnimatedCard = styled.div`
   width: 400px;
   background-color: #fff8f0;
-  color: #333333;
+  color: #1a1a1a;
   min-height: 200px;
   padding: 12px 18px;
-  border: 4px solid #333333;
+  border: 4px solid #1a1a1a;
   box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.45);
   border-top-left-radius: 40px;
   border-bottom-right-radius: 40px;

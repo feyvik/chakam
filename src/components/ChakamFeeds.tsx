@@ -17,7 +17,7 @@ const PageWrapper = styled.div`
 
   button {
     box-shadow: none;
-    color: #333333;
+    color: #1a1a1a;
   }
 
   .empty_state {
@@ -44,7 +44,7 @@ const PageWrapper = styled.div`
       border-top-left-radius: 40px;
       border-bottom-right-radius: 40px;
       background: #ffffff;
-      border: 2px solid #333333;
+      border: 2px solid #1a1a1a;
     }
 
     .card {
@@ -67,7 +67,7 @@ const PageWrapper = styled.div`
 
 const DisplayCard = styled.div`
   .preview_card {
-    border: 4px solid #333333;
+    border: 4px solid #1a1a1a;
     border-radius: 10px;
     width: 100%;
     min-height: 200px;
@@ -88,7 +88,7 @@ const DisplayCard = styled.div`
     font-family: "Luckiest Guy", cursive;
     font-size: 2rem;
     color: #ffffff;
-    -webkit-text-stroke: 1px #333333;
+    -webkit-text-stroke: 1px #1a1a1a;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
   }
 `;

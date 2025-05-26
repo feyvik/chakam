@@ -31,7 +31,7 @@ const PageWrapper = styled.div`
 
   .comment_section {
     background: #ffffff;
-    border: 2px solid #333333;
+    border: 2px solid #1a1a1a;
     border-radius: 10px;
   }
 
@@ -42,7 +42,7 @@ const PageWrapper = styled.div`
 
   .comment_post {
     background: #ffffff;
-    border: 2px solid #333333;
+    border: 2px solid #1a1a1a;
     border-radius: 10px;
     height: 100%;
   }
@@ -67,7 +67,7 @@ const PageWrapper = styled.div`
   .image_Card {
     width: 100%;
     border-radius: 10px;
-    border: 4px solid #333333;
+    border: 4px solid #1a1a1a;
     border-radius: 10px;
 
     img {
@@ -90,7 +90,7 @@ const DisplayCard = styled.div`
     background: #ff4d00;
     color: #1a1a1a;
     height: 200px;
-    border: 4px solid #333333;
+    border: 4px solid #1a1a1a;
     border-radius: 10px;
   }
 
@@ -102,7 +102,7 @@ const DisplayCard = styled.div`
     font-family: "Luckiest Guy", cursive;
     font-size: 2rem;
     color: #ffffff;
-    -webkit-text-stroke: 1px #333333;
+    -webkit-text-stroke: 1px #1a1a1a;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
   }
 `;
@@ -298,7 +298,7 @@ const Input = styled.div`
     width: 100%;
     height: 60px;
     font-size: 16px;
-    border: 2px solid #333333;
+    border: 2px solid #1a1a1a;
     border-radius: 10px;
     padding: 12px 10px;
     outline: none;

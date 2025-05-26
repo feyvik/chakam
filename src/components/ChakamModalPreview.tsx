@@ -33,7 +33,7 @@ const CloseButton = styled.button`
 
 const DisplayCard = styled.div`
   .preview_card {
-    border: 4px solid #333333;
+    border: 4px solid #1a1a1a;
     border-radius: 10px;
     width: 100%;
     min-height: 200px;
@@ -54,7 +54,7 @@ const DisplayCard = styled.div`
     font-family: "Luckiest Guy", cursive;
     font-size: 2rem;
     color: #ffffff;
-    -webkit-text-stroke: 1px #333333;
+    -webkit-text-stroke: 1px #1a1a1a;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
   }
 `;

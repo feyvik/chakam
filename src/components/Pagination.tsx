@@ -12,7 +12,7 @@ const PaginationWrapper = styled.div`
   flex-direction: column;
   .current {
     font-weight: bolder;
-    border: 2px solid #333333;
+    border: 2px solid #1a1a1a;
     padding: 2px 10px;
     border-radius: 4px;
   }

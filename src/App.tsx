@@ -7,10 +7,11 @@ import Home from "./pages/Home";
 import ChakamCard from "./pages/ChakamCard";
 import SinglePost from "./components/SinglePost";
 import ProtectedRoute from "./ProtectedRoute";
+import { DarkModeProvider } from "./provider/DarkModeProvider";
 
 function App() {
   return (
-    <>
+    <DarkModeProvider>
       <Header />
       <Routes>
         <Route path="/" element={<Home />} />
@@ -32,7 +33,7 @@ function App() {
           }
         />
       </Routes>
-    </>
+    </DarkModeProvider>
   );
 }
 
